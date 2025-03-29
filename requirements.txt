@@ -1,7 +1,7 @@
 numpy==1.26.0
 librosa==0.10.1
 pydub==0.25.1
-pedalboard==0.9.16
+pedalboard==0.7.4
 sounddevice==0.4.6
 mido==1.2.10
 python-rtmidi==1.5.6
@@ -10,3 +10,7 @@ pyqtgraph==0.13.3
 python-osc==1.8.3
 firebase-admin==6.2.0
 websockets==12.0
+soundfile==0.12.1
+pytest==7.4.4
+setuptools==69.2.0
+pyyaml==6.0.1
