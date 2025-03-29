@@ -10,3 +10,6 @@ midi:
 gui:
   theme: dark
   default_scale: C Major
+
+loops:
+  default_loop_path: ~/loops

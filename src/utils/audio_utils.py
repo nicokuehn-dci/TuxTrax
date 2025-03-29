@@ -26,3 +26,13 @@ def quantize_to_bpm(audio_data, sr, bpm):
     """Quantize audio to the given BPM using librosa"""
     hop_length = int(60 / bpm * sr)
     return librosa.effects.time_stretch(audio_data, hop_length)
+
+def load_loop_file(file_path):
+    """Load loop file using librosa"""
+    y, sr = librosa.load(file_path, sr=None, mono=True)
+    return y, sr
+
+def quantize_loop_to_bpm(audio_data, sr, bpm):
+    """Quantize loop to the given BPM using librosa"""
+    hop_length = int(60 / bpm * sr)
+    return librosa.effects.time_stretch(audio_data, hop_length)
