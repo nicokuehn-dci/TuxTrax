@@ -14,3 +14,4 @@ soundfile==0.12.1
 pytest==7.4.4
 setuptools==69.2.0
 pyyaml==6.0.1
+pdoc==12.2.0
