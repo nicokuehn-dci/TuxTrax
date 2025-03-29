@@ -67,6 +67,10 @@ def setup_recording_choices():
     print(f"Recording configuration: Card {card_number}, Device {device_number}, Format {format}, Bitrate {bitrate}")
     subprocess.run(['arecord', '-D', f'plughw:{card_number},{device_number}', '-f', format, '-r', bitrate, '-d', '10', 'test_recording.wav'], check=True)
 
+def setup_multitrack_recording():
+    print("🔧 Setting up multi-track recording...")
+    # Add any necessary configuration or setup for multi-track recording here
+
 def launch_app():
     print("🚀 Launching TuxTrax...")
     try:
@@ -100,6 +104,7 @@ def system_check():
         configure_pulse_jack()
         setup_midi_devices()
         setup_recording_choices()
+        setup_multitrack_recording()
         return True
     except subprocess.CalledProcessError as e:
         print(f"❌ Audio config failed: {e}")

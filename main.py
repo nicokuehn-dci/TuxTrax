@@ -16,6 +16,10 @@ class MainWindow(QMainWindow):
         self.midi_manager.start()
         self._setup_ui()
         self._connect_midi_signals()
+        self.tracks = []
+        self.automation_lanes = []
+        self._setup_multitrack()
+        self._setup_automation_lanes()
         
     def _setup_ui(self):
         # Central waveform editor
@@ -49,6 +53,23 @@ class MainWindow(QMainWindow):
 
     def handle_cc_changed(self, cc_number, value):
         print(f"CC changed: {cc_number} with value {value}")
+
+    def _setup_multitrack(self):
+        for i in range(8):  # Example: 8 tracks
+            track = {
+                'name': f'Track {i+1}',
+                'audio_data': [],
+                'midi_data': []
+            }
+            self.tracks.append(track)
+
+    def _setup_automation_lanes(self):
+        for i in range(8):  # Example: 8 automation lanes
+            lane = {
+                'name': f'Automation Lane {i+1}',
+                'data': []
+            }
+            self.automation_lanes.append(lane)
 
     def __del__(self):
         self.midi_manager.stop()

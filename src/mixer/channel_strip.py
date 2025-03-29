@@ -1,14 +1,21 @@
-from PyQt5.QtWidgets import QWidget, QSlider, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QSlider, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit
 from PyQt5.QtCore import Qt, pyqtSignal
 
 class ChannelStrip(QWidget):
     volume_changed = pyqtSignal(float)  # 0.0-1.0
     pan_changed = pyqtSignal(float)     # -1.0 (left) to 1.0 (right)
+    track_name_changed = pyqtSignal(str)  # Track name changed
 
     def __init__(self):
         super().__init__()
         
         layout = QVBoxLayout()
+        
+        # Track Name
+        self.track_name_input = QLineEdit()
+        self.track_name_input.setPlaceholderText("Track Name")
+        self.track_name_input.textChanged.connect(self._on_track_name_changed)
+        layout.addWidget(self.track_name_input)
         
         # Volume Slider
         self.volume_slider = QSlider(Qt.Vertical)
@@ -33,3 +40,6 @@ class ChannelStrip(QWidget):
 
     def _on_pan_changed(self, value):
         self.pan_changed.emit(value / 50.0)
+        
+    def _on_track_name_changed(self, name):
+        self.track_name_changed.emit(name)
