@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# This script sets up a DAW Python project with all dependencies
+
+echo "🔧 Updating and installing system dependencies..."
+sudo apt-get update && sudo apt-get install -y \
+    python3.10 \
+    python3.10-venv \
+    jackd2 \
+    ffmpeg \
+    portaudio19-dev \
+    python3-pip
+
+# Remove broken PPA if it exists
+echo "🧹 Removing broken webkit PPA (if present)..."
+sudo add-apt-repository --remove ppa:webkit-team/ppa -y || true
+
+# Create project and virtual environment
+echo "📁 Creating project directory and virtual environment..."
+mkdir -p ~/projects/my_daw && cd ~/projects/my_daw
+python3.10 -m venv daw_env
+source daw_env/bin/activate
+
+# Write requirements.txt
+echo "📦 Writing Python dependencies to requirements.txt..."
+cat <<EOF > requirements.txt
+numpy==1.26.0
+librosa==0.10.1
+pydub==0.25.1
+pedalboard==0.9.16
+sounddevice==0.4.6
+mido==1.2.10
+python-rtmidi==1.5.6
+PyQt5==5.15.10
+pyqtgraph==0.13.3
+python-osc==1.8.3
+firebase-admin==6.2.0
+websockets==12.0
+EOF
+
+# Install packages
+echo "⬇️ Installing Python packages..."
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Create folder structure
+echo "📂 Creating project folder structure..."
+mkdir -p .vscode src/{sampler,mixer,gui,utils,config} samples docs tests
+
+# Initialize core files
+echo "📝 Initializing boilerplate files..."
+touch src/{main.py,__init__.py} \
+      src/sampler/{__init__.py,engine.py,waveform_editor.py,midi_mapper.py} \
+      src/mixer/{__init__.py,channel_strip.py,fx_rack.py,sidechain.py} \
+      src/gui/{__init__.py,elektron_menu.py,performance_grid.py,styles.qss} \
+      src/utils/{__init__.py,audio_utils.py,midi_utils.py} \
+      src/config/{default.yaml,keybindings.py} \
+      README.md setup.py
+
+# Configure JACK
+echo "🎚️ Configuring JACK for real-time audio..."
+sudo usermod -a -G audio $USER
+echo "@audio - rtprio 99" | sudo tee -a /etc/security/limits.conf
+echo "@audio - memlock unlimited" | sudo tee -a /etc/security/limits.conf
+
+# Done
+echo "✅ All done!"
+
+echo ""
+echo "📌 NEXT STEPS:"
+echo "1. REBOOT your system to apply JACK real-time settings"
+echo "2. To activate the virtual environment later:"
+echo "   source ~/projects/my_daw/daw_env/bin/activate"
+echo "3. To start coding, open main.py:"
+echo "   code ~/projects/my_daw/src/main.py"
+
+
+
+# Copy it into terminal to install structure and dependencies.
