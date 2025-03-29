@@ -250,3 +250,5 @@ The MIDI auto quantize feature allows you to automatically align your MIDI notes
 ### Updated Documentation
 
 The documentation has been updated to reflect these new features. Be sure to check out the [Quickstart Guide](docs/quickstart.md) for more information on how to use these new capabilities.
+
+

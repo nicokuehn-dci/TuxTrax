@@ -11,18 +11,25 @@ from sampler.engine import SamplerEngine
 from mixer.channel_strip import ChannelStrip
 from src.sampler.midi_mapper import MidiMapper
 from pedalboard import Pedalboard
+from src.audio.midi_handler import MidiManager
+from src.audio.engine import AudioEngine
+from src.config.settings import AudioMIDISettings
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.sampler = SamplerEngine()
-        self.midi_mapper = MidiMapper()
-        self.midi_mapper.start_listening_thread()
         self._setup_ui()
+        self.init_background_tasks()
+
+    def init_background_tasks(self):
         self.audio_engine = AudioEngine()
         self.audio_thread = Thread(target=self.audio_engine.start)
         self.audio_thread.start()
-        
+        self.sampler = SamplerEngine()
+        self.midi_mapper = MidiMapper()
+        self.midi_mapper.start_listening_thread()
+
     def _setup_ui(self):
         # Central waveform editor
         self.waveform_editor = WaveformEditor()
@@ -51,6 +58,12 @@ class MainWindow(QMainWindow):
         self.audio_engine.stop()
         self.audio_thread.join()
 
+    def closeEvent(self, event):
+        self.midi_mapper.stop_listening()
+        self.audio_engine.stop()
+        self.audio_thread.join()
+        event.accept()
+
 class AudioEngine:
     def __init__(self, sr=48000, buffer_size=512):
         self.sr = sr
@@ -67,15 +80,23 @@ class AudioEngine:
         )
 
     def _callback(self, outdata, frames, time, status):
-        with self.lock:
-            processed = self.fx_rack.process(self.mix_buffer, self.sr)
-            outdata[:] = processed
-            self.mix_buffer.fill(0)
+        if status:
+            print(f"Stream status: {status}")
+        try:
+            with self.lock:
+                processed = self.fx_rack.process(self.mix_buffer, self.sr)
+                outdata[:] = processed
+                self.mix_buffer.fill(0)
+        except Exception as e:
+            print(f"Error in audio callback: {e}")
+            outdata.fill(0)
 
     def add_audio(self, audio):
         with self.lock:
-            end = min(len(audio), self.buffer_size)
-            self.mix_buffer[:end] += audio[:end]
+            for i in range(0, len(audio), self.buffer_size):
+                chunk = audio[i:i + self.buffer_size]
+                end = min(len(chunk), self.buffer_size)
+                self.mix_buffer[:end] += chunk[:end]
 
     def start(self):
         self.stream.start()
