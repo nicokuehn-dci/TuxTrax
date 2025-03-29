@@ -1,0 +1,130 @@
+Ultimate Audio App Feature List
+
+(Sampler + Mixer + DAW Hybrid)
+
+Core Features
+
+Sampler Section:
+
+    Multi-Sample Import: Drag-and-drop WAV/MP3/FLAC, auto-slice loops.
+
+    Smart Pitch/Time:
+
+        Time-stretching (Paulstretch algorithm).
+
+        Auto-tune to scales (Ableton Simpler-style).
+
+    Sampler Modes: One-shot, ADSR envelopes, Loop modes.
+
+    MIDI Mapping: Assign samples to notes (drum pads, melodic instruments).
+
+    Made for live performance
+
+Mixer Section:
+
+    Analog-Style Channel Strips: Volume, Pan, Solo/Mute, 3-band EQ.(chooseable eq styles)
+
+    Pro Effects Rack:
+
+        Inserts: Tube saturator, Tape emulation, Bitcrusher.
+
+        Sends: Convolution reverb, Analog delay, Phaser, Chorus, Flanger, Stutter.
+
+    Sidechain Compression: Duck channels via triggers (kick/bass ducking).
+
+
+Pro Features:
+
+AI-Powered Workflow
+
+    Auto-Tag Samples: ML-driven tagging (genre, instrument, key/BPM).
+
+    Smart Sample Matching: Find harmonically compatible samples.
+
+    AI Mastering: One-click mastering (EQ, limiter, stereo widening).
+
+    Style Transfer: Convert audio between genres (e.g., rock → DnB).
+
+Sample Library Integration
+
+    Deep Library Scanning: Auto-index Splice/Loopmasters folders.
+
+    Cloud Sync: Link to Splice, Noiiz, or custom libraries.
+
+    Auto-Fill Channels:
+
+        Style-based channel population (e.g., "Hip-Hop Kit").
+
+        "Surprise Me" randomization.
+
+MIDI & Sequencing
+
+    MIDI Style Library:
+
+        Genre templates (House, Trap, Techno, Lo-fi).
+
+        Humanization (swing/groove templates).
+
+    MIDI Drag & Drop: Export clips to DAWs/hardware.
+
+    MIDI Learn: Map hardware knobs/faders.
+
+Modulation & Automation
+
+    LFO Tool: Modulate FX parameters (filter wobble, tremolo).
+
+    Automation Lanes: Draw curves for volume/pan/FX over time.
+
+Hardware Integration
+
+    Eurorack Sync: CV/Gate support via python-osc.
+
+    DAW Controller Support: Akai APC, Ableton Push.
+
+Collaboration
+
+    Cloud Projects: Google Drive/Dropbox sync with versioning.
+
+    Live Collaboration: Real-time editing (WebSockets + Firebase).
+
+Visual Feedback
+
+    Spectrogram View: Frequency analysis (pyqtgraph).
+
+    Phase Correlation Meter: Avoid mono issues.
+
+Unique Selling Points
+
+    Vintage Mode: Tape hiss/vinyl crackle emulation.
+
+    Modular FX Grid: Drag-and-drop routing (Bitwig-style).
+
+    Live Looping: Real-time overdub (Boss RC-505 inspired).
+
+    Ubuntu-First: Optimized for Linux audio workflows.
+
+
+
+Tech Stack
+
+Python Libraries
+
+    Audio Engine: pedalboard, sounddevice, pydub.
+
+    AI/ML: librosa, tensorflow-lite.
+
+    GUI: PyQt5, DearPyGui, pyqtgraph.
+
+    Cloud: boto3, firebase-admin, websockets.
+
+    MIDI/CV: mido, python-rtmidi, python-osc.
+
+Performance Hacks
+
+    Real-Time Audio: JACK Audio (jackd).
+
+    C Extensions: cython/numba for DSP.
+
+    Multicore: ray/multiprocessing.
+
+

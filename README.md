@@ -141,6 +141,70 @@ If you find TuxTrax useful, please give this project a ⭐ to show your support!
 *   [ ] Discord: (Add a link to a Discord server if you have one)
 *   [ ] Forum: (Add a link to a forum or discussion board)
 
+
+Structure of TruxTrax Project
+
+TuxTrax/
+├── .gitignore             # Specifies untracked files to ignore
+├── requirements.txt       # Python dependencies
+├── setup.py               # Future packaging script
+├── README.md              # Project documentation (you're here!)
+├── samples/               # Example audio files for testing
+├── docs/                  # User manuals, design notes
+├── tests/                 # Unit and integration tests
+│
+├── src/                   # Core application code
+│   ├── main.py            # Main entry point
+│   ├── config/            # Configuration files
+│   │   ├── default.yaml   # Default settings/presets
+│   │   └── keybindings.py # MIDI/keyboard mappings
+│   │
+│   ├── sampler/           # Sampler components
+│   │   ├── engine.py      # Core sampler logic
+│   │   ├── waveform_editor.py # Elektron-style waveform UI
+│   │   └── midi_mapper.py # MIDI note mapping
+│   │
+│   ├── mixer/             # Mixer components
+│   │   ├── channel_strip.py # Volume/pan/EQ controls
+│   │   ├── fx_rack.py     # Effects processing
+│   │   └── sidechain.py   # Sidechain compression
+│   │
+│   ├── gui/               # User interface components
+│   │   ├── elektron_menu.py # Digitakt-style encoder UI
+│   │   ├── performance_grid.py # 4x4 trigger pad grid
+│   │   └── styles.qss     # PyQt stylesheets
+│   │
+│   └── utils/             # Helper functions
+│       ├── audio_utils.py # BPM detection, file conversion
+│       └── midi_utils.py  # MIDI I/O handlers
+│
+└── .vscode/              # IDE settings (optional)
+    ├── settings.json
+    └── extensions.json
+
+
+
+Installation (Ubuntu/Linux)
+
+# Clone repository
+git clone https://github.com/nicokuehn-dci/TuxTrax.git
+cd TuxTrax
+
+# Install system dependencies
+sudo apt-get install -y python3-tk ffmpeg jackd2 libportaudio2
+
+# Create virtual environment
+python3 -m venv daw_env
+source daw_env/bin/activate
+
+# Install Python packages
+pip install -r requirements.txt
+
+# Configure JACK audio (reboot after)
+sudo usermod -a -G audio $USER
+echo "@audio - rtprio 99" | sudo tee -a /etc/security/limits.conf
+
+
 ---
 
 Made with ❤️ for the love of music and open source by Nico Kühn.
