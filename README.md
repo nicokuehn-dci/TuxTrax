@@ -144,41 +144,44 @@ If you find TuxTrax useful, please give this project a ⭐ to show your support!
 
 Structure of TruxTrax Project
 
+## Project Structure
+
+```bash
 TuxTrax/
-├── .gitignore             # Specifies untracked files to ignore
-├── requirements.txt       # Python dependencies
-├── setup.py               # Future packaging script
-├── README.md              # Project documentation (you're here!)
-├── samples/               # Example audio files for testing
-├── docs/                  # User manuals, design notes
-├── tests/                 # Unit and integration tests
+├── .gitignore
+├── requirements.txt
+├── setup.py
+├── README.md
+├── samples/
+├── docs/
+├── tests/
 │
-├── src/                   # Core application code
-│   ├── main.py            # Main entry point
-│   ├── config/            # Configuration files
-│   │   ├── default.yaml   # Default settings/presets
-│   │   └── keybindings.py # MIDI/keyboard mappings
+├── src/
+│   ├── main.py
+│   ├── config/
+│   │   ├── default.yaml
+│   │   └── keybindings.py
 │   │
-│   ├── sampler/           # Sampler components
-│   │   ├── engine.py      # Core sampler logic
-│   │   ├── waveform_editor.py # Elektron-style waveform UI
-│   │   └── midi_mapper.py # MIDI note mapping
+│   ├── sampler/
+│   │   ├── engine.py
+│   │   ├── waveform_editor.py
+│   │   └── midi_mapper.py
 │   │
-│   ├── mixer/             # Mixer components
-│   │   ├── channel_strip.py # Volume/pan/EQ controls
-│   │   ├── fx_rack.py     # Effects processing
-│   │   └── sidechain.py   # Sidechain compression
+│   ├── mixer/
+│   │   ├── channel_strip.py
+│   │   ├── fx_rack.py
+│   │   └── sidechain.py
 │   │
-│   ├── gui/               # User interface components
-│   │   ├── elektron_menu.py # Digitakt-style encoder UI
-│   │   ├── performance_grid.py # 4x4 trigger pad grid
-│   │   └── styles.qss     # PyQt stylesheets
+│   ├── gui/
+│   │   ├── elektron_menu.py
+│   │   ├── performance_grid.py
+│   │   └── styles.qss
 │   │
-│   └── utils/             # Helper functions
-│       ├── audio_utils.py # BPM detection, file conversion
-│       └── midi_utils.py  # MIDI I/O handlers
+│   └── utils/
+│       ├── audio_utils.py
+│       └── midi_utils.py
 │
-└── .vscode/              # IDE settings (optional)
+└── .vscode/
     ├── settings.json
     └── extensions.json
 
