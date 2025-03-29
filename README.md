@@ -211,6 +211,3 @@ echo "@audio - rtprio 99" | sudo tee -a /etc/security/limits.conf
 ---
 
 Made with ❤️ for the love of music and open source by Nico Kühn.
-
-
-
