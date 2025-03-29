@@ -20,7 +20,10 @@ setup(
         'python-rtmidi>=1.5',
         'pyqtgraph>=0.13',
         'PyYAML>=6.0',
-        'soundfile>=0.12'
+        'soundfile>=0.12',
+        'pytest>=7.4.4',
+        'setuptools>=69.2.0',
+        'pyyaml>=6.0.1'
     ],
     entry_points={
         'console_scripts': [
