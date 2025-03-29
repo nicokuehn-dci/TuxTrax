@@ -26,37 +26,14 @@ version_ge() {
     test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
 }
 
-verify_jack() {
-    if command -v jackd &>/dev/null; then
-        JACK_VERSION=$(jackd --version 2>&1 | grep -Po '(?<=jackd version )[\d.]+')
-        if version_ge "$JACK_VERSION" "$MIN_JACK_VERSION"; then
-            echo -e "${GREEN}JACK2 v$JACK_VERSION already installed${NC}"
-            return 0
-        else
-            echo -e "${YELLOW}Found JACK2 v$JACK_VERSION (minimum v$MIN_JACK_VERSION required)${NC}"
-            return 1
-        fi
-    else
-        echo -e "${RED}JACK2 not found${NC}"
-        return 1
+verify_pipewire() {
+    if command -v pipewire &>/dev/null; then
+        PIPEWIRE_VERSION=$(pipewire --version 2>&1 | grep -Po '(?<=pipewire )[\d.]+')
     fi
 }
 
-install_jack() {
-    echo -e "${YELLOW}Installing latest JACK2...${NC}"
-    
-    echo -e "${YELLOW}Adding KX Studio repositories...${NC}"
-    sudo apt-get install -y apt-transport-https gpgv wget || handle_error "Failed to install repo dependencies"
-    wget -q "$KX_STUDIO_REPO/+files/kxstudio-repos_11.1.0_all.deb" || handle_error "Failed to download repo package"
-    sudo dpkg -i kxstudio-repos_11.1.0_all.deb || handle_error "Failed to install repo package"
-    sudo apt-get update || handle_error "Failed to update package lists"
-
-    echo -e "${YELLOW}Installing JACK2 and dependencies...${NC}"
-    sudo apt-get install -y jackd2 $REQUIRED_PACKAGES || handle_error "Failed to install audio packages"
-    
-    if ! verify_jack; then
-        handle_error "JACK2 installation failed version check"
-    fi
+install_pipewire() {
+    sudo apt-get install -y pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse || handle_error "Failed to install PipeWire packages"
 }
 
 configure_permissions() {

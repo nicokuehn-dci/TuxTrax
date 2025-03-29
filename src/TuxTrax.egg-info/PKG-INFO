@@ -1,0 +1,275 @@
+Metadata-Version: 2.4
+Name: TuxTrax
+Version: 0.1.0
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.26
+Requires-Dist: PyQt5>=5.15
+Requires-Dist: pedalboard>=0.7
+Requires-Dist: librosa>=0.10
+Requires-Dist: sounddevice>=0.4
+Requires-Dist: mido>=1.2
+Requires-Dist: python-rtmidi>=1.5
+Requires-Dist: pyqtgraph>=0.13
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: soundfile>=0.12
+Requires-Dist: pytest>=7.4.4
+Requires-Dist: setuptools>=69.2.0
+Requires-Dist: pyyaml>=6.0.1
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+
+# TuxTrax: Unleash Your Inner Penguin DJ
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Ubuntu-First](https://img.shields.io/badge/Platform-Linux%20(Ubuntu)-brightgreen)
+![Python](https://img.shields.io/badge/Language-Python-blue)
+![PyQt5](https://img.shields.io/badge/GUI-PyQt5-orange)
+
+## Jam Like a Penguin: The Ubuntu-First Live Performance Sampler & Mixer
+
+**TuxTrax** is a powerful, open-source live performance sampler and mixer, built from the ground up for Ubuntu and the vibrant Linux audio community. Embrace the spirit of Tux, the Linux penguin, and unleash your creativity with this powerful and versatile tool. Whether you're a seasoned DJ or just starting your musical journey, TuxTrax combines intuitive sampling, mixing, and performance features with cutting-edge AI-powered tools, providing everything you need to create captivating live soundscapes.
+
+## Core Features - Assembled By Penguins
+
+*   **Sampler Section:** Effortlessly import, slice, and manipulate samples with MIDI mapping for full expressive control.
+*   **Mixer Section:** Craft polished mixes with analog-style channel strips, a pro-grade effects rack, and dynamic sidechain compression.
+*   **Ubuntu-First Focus:** Experience exceptional low-latency performance thanks to our JACK Audio integration.
+
+## Feature Highlights: From Ice Floe to Stage
+
+### Sampler Section: Your Palette of Sound
+
+*   **Multi-Sample Import:** Drag and drop WAV, MP3, and FLAC files, then automatically slice loops for rhythmic perfection.
+*   **Smart Pitch/Time:** Manipulate tempo and pitch with ease. The Paulstretch algorithm delivers pristine time-stretching, while auto-tune helps lock your samples into perfect harmony.
+*   **Sampler Modes:** Explore a range of modes:
+    *   **One-Shot:** Perfect for percussive hits and short samples.
+    *   **ADSR Envelopes:** Sculpt the dynamics of your sounds.
+    *   **Loop Modes:** Create evolving textures and soundscapes.
+*   **MIDI Mapping:** Assign samples to notes or pads for expressive play with drum pads and melodic instruments.
+
+### Mixer Section: Sculpt Your Sonic Landscape
+
+*   **Analog-Style Channel Strips:** Tweak levels, pan, and EQ on each channel for a polished, balanced mix. Choose from a variety of EQ styles to impart character and shape to your tracks.
+*   **Pro Effects Rack:** Elevate your mixes with high-quality effects:
+    *   **Inserts:** Inject warmth and character with the Tube Saturator, capture vintage vibes with Tape Emulation, or add digital grit with the Bitcrusher.
+    *   **Sends:** Generate immersive sonic spaces with Convolution Reverb, build hypnotic rhythms with Analog Delay, or add swirling movement with Phaser, Chorus, Flanger, and Stutter effects.
+*   **Sidechain Compression:** Add rhythmic pumping to your mix by ducking channels with kick drums or basslines.
+
+## Pro Features: Evolve Your Sound
+
+### AI-Powered Workflow: The Future of Sound
+
+*   **Auto-Tag Samples:** Spend less time organizing and more time creating, thanks to ML-driven tagging for genre, instrument type, key, and BPM.
+*   **Smart Sample Matching:** Uncover hidden sonic gems by finding harmonically compatible samples.
+*   **AI Mastering:** Achieve a professional, polished sound with one-click EQ, limiter, and stereo widening.
+*   **Style Transfer:** Transform your audio between genres. Want to turn a rock riff into a DnB banger? TuxTrax has you covered! (Experimental feature)
+
+### Sample Library Integration: Dive Into Your Sound Collection
+
+*   **Deep Library Scanning:** Automatically index your Splice, Loopmasters, or other sample folders.
+*   **Cloud Sync:** Access your samples from anywhere by linking TuxTrax to your cloud storage provider (Splice, Noiiz, Google Drive, Dropbox).
+*   **Auto-Fill Channels:** Spark inspiration with:
+    *   **Style-Based Channel Population:** Quickly create complete kits based on genre (e.g., "Hip-Hop Kit").
+    *   **"Surprise Me" Randomization:** Embrace the unexpected and discover new sounds.
+
+### MIDI & Sequencing: Sequence Your Way
+
+*   **MIDI Style Library:** Jumpstart your creativity with:
+    *   **Genre Templates:** Load pre-made templates for House, Trap, Techno, Lo-fi, and more.
+    *   **Humanization:** Inject groove and swing into your MIDI sequences with realistic humanization templates.
+*   **MIDI Drag & Drop:** Seamlessly export MIDI clips to your favorite DAWs or hardware for further refinement.
+*   **MIDI Learn:** Take hands-on control by mapping hardware knobs and faders to TuxTrax parameters.
+
+### Modulation & Automation: Bring Your Sounds to Life
+
+*   **LFO Tool:** Add dynamic movement by modulating FX parameters like filter cutoff or tremolo depth.
+*   **Automation Lanes:** Precisely control volume, pan, and FX parameters over time with custom-drawn automation curves.
+
+### Hardware Integration: Bridge the Digital and Analog Worlds
+
+*   **Eurorack Sync:** Integrate with modular synthesizers using CV/Gate support via `python-osc`.
+*   **DAW Controller Support:** Enjoy tactile control with popular controllers like Akai APC and Ableton Push.
+
+### Collaboration: Create Together
+
+*   **Cloud Projects:** Collaborate with other penguins by syncing your projects with Google Drive or Dropbox, complete with versioning.
+*   **Live Collaboration (Experimental):** Jam with musicians in real-time with our WebSockets + Firebase-powered live editing feature.
+
+### Visual Feedback: See the Sound
+
+*   **Spectrogram View:** Analyze the frequency content of your audio with real-time spectrogram visualization powered by `pyqtgraph`.
+*   **Phase Correlation Meter:** Prevent mono compatibility issues with real-time phase monitoring.
+
+## Unique Selling Points: Why Choose TuxTrax?
+
+*   **Vintage Mode:** Add the warmth and character of classic analog gear with tape hiss and vinyl crackle emulation.
+*   **Modular FX Grid:** Design your own custom effects chains with drag-and-drop routing (inspired by Bitwig).
+*   **Live Looping:** Overdub and layer sounds in real-time with our intuitive live looping functionality (inspired by Boss RC-505).
+*   **Ubuntu-First:** Optimized for low-latency performance and a smooth user experience on Linux. **This isn't just cross-platform, it's built for Linux first.**
+
+## Tech Stack: Under the Hood
+
+TuxTrax is built on a foundation of powerful, open-source technologies:
+
+*   **Python Libraries:**
+    *   **Audio Engine:** `pedalboard`, `sounddevice`, `pydub`
+    *   **AI/ML:** `librosa`, `tensorflow-lite`
+    *   **GUI:** `PyQt5`, `DearPyGui`, `pyqtgraph`
+    *   **Cloud:** `boto3`, `firebase-admin`, `websockets`
+    *   **MIDI/CV:** `mido`, `python-rtmidi`, `python-osc`
+*   **Performance Optimizations:**
+    *   **Real-Time Audio:** JACK Audio (`jackd`)
+    *   **C Extensions:** `cython`/`numba` for blazing-fast DSP.
+    *   **Multicore Processing:** Harness the power of modern CPUs with `ray`/`multiprocessing`.
+
+## Getting Started: Let's Make Some Noise!
+
+1.  **Clone the repository:**
+
+    ```
+    git clone git@github.com:nicokuehn-dci/TuxTrax.git
+    cd TuxTrax
+    ```
+
+2.  **Dive into the [Setup Guide](docs/SETUP.md) for detailed installation and configuration instructions.**
+
+## Contributing: Join the Penguin Party
+
+We welcome contributions from the open-source community! Whether you're a seasoned developer, a talented sound designer, or just eager to help, there's a place for you in the TuxTrax community. Check out our [Contribution Guidelines](CONTRIBUTING.md) for more information.
+
+## License: Open Source, Open Minds
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support: We're Here to Help
+
+Encounter a bug? Have a feature request? Let us know by opening an issue on GitHub!
+
+## Roadmap: The Future of TuxTrax
+
+*   [ ] **Implement Style Transfer:** Expand our AI-powered style transfer capabilities.
+*   [ ] **Expand the MIDI Style Library:** Provide even more genre-specific MIDI templates.
+*   [ ] **Improve Cloud Collaboration Features:** Make real-time jamming even more seamless.
+*   [ ] **Native Plugin Support**: Host VST/AU plugins within TuxTrax.
+
+## Show Your Support: Give a Penguin a Fish
+
+If you find TuxTrax useful, please give this project a ⭐ to show your support! And don't forget to share your creations with the world!
+
+## Connect with the Community:
+
+*   [ ] Discord: (Add a link to a Discord server if you have one)
+*   [ ] Forum: (Add a link to a forum or discussion board)
+
+
+Structure of TruxTrax Project
+
+## Project Structure
+
+```bash
+TuxTrax/
+├── .gitignore
+├── requirements.txt
+├── setup.py
+├── README.md
+├── samples/
+├── docs/
+├── tests/
+│
+├── src/
+│   ├── main.py
+│   ├── config/
+│   │   ├── default.yaml
+│   │   └── keybindings.py
+│   │
+│   ├── sampler/
+│   │   ├── engine.py
+│   │   ├── waveform_editor.py
+│   │   └── midi_mapper.py
+│   │
+│   ├── mixer/
+│   │   ├── channel_strip.py
+│   │   ├── fx_rack.py
+│   │   └── sidechain.py
+│   │
+│   ├── gui/
+│   │   ├── elektron_menu.py
+│   │   ├── performance_grid.py
+│   │   └── styles.qss
+│   │
+│   └── utils/
+│       ├── audio_utils.py
+│       └── midi_utils.py
+│
+└── .vscode/
+    ├── settings.json
+    └── extensions.json
+
+
+
+Installation (Ubuntu/Linux)
+
+# Clone repository
+git clone https://github.com/nicokuehn-dci/TuxTrax.git
+cd TuxTrax
+
+# Install system dependencies
+sudo apt-get install -y python3-tk ffmpeg jackd2 libportaudio2
+
+# Create virtual environment
+python3 -m venv daw_env
+source daw_env/bin/activate
+
+# Install Python packages
+pip install -r requirements.txt
+
+# Configure JACK audio (reboot after)
+sudo usermod -a -G audio $USER
+echo "@audio - rtprio 99" | sudo tee -a /etc/security/limits.conf
+
+## Contribution Guidelines
+
+We welcome contributions from the open-source community! Whether you're a seasoned developer, a talented sound designer, or just eager to help, there's a place for you in the TuxTrax community. Here are some ways you can contribute:
+
+1. **Report Bugs:** If you encounter any issues while using TuxTrax, please report them by opening an issue on GitHub. Be sure to include detailed information about the problem and steps to reproduce it.
+
+2. **Request Features:** Have an idea for a new feature? We'd love to hear it! Open an issue on GitHub to share your suggestion.
+
+3. **Submit Pull Requests:** If you'd like to contribute code, follow these steps:
+    - Fork the repository
+    - Create a new branch for your feature or bugfix
+    - Make your changes
+    - Submit a pull request with a clear description of your changes
+
+4. **Improve Documentation:** Help us keep our documentation up-to-date and comprehensive. If you find any gaps or errors, please submit a pull request with your improvements.
+
+5. **Join the Discussion:** Engage with the community by participating in discussions on GitHub, Discord, or our forum. Your feedback and ideas are invaluable to the project's growth.
+
+## Detailed Setup Guide
+
+For detailed installation and configuration instructions, please refer to the [Setup Guide](docs/SETUP.md). This guide includes step-by-step instructions for installing TuxTrax on Ubuntu, including system dependencies, virtual environment setup, and configuring JACK audio.
+
+## New Features
+
+### Audio Loops and Auto Quantize to BPM
+
+TuxTrax now includes handling for audio loops and auto quantize to BPM. This allows you to seamlessly integrate loops into your projects and ensure they are perfectly in sync with your desired tempo.
+
+### Time-Stretching
+
+With the new time-stretching feature, you can adjust the tempo of your audio samples without affecting their pitch. This is particularly useful for creating remixes or matching the tempo of different samples.
+
+### High-Quality Output
+
+TuxTrax now offers high-quality output options, ensuring your final mix sounds professional and polished. This includes advanced processing techniques to enhance the overall sound quality.
+
+### MIDI Auto Quantize
+
+The MIDI auto quantize feature allows you to automatically align your MIDI notes to the nearest beat, ensuring tight and precise timing in your performances.
+
+### Updated Documentation
+
+The documentation has been updated to reflect these new features. Be sure to check out the [Quickstart Guide](docs/quickstart.md) for more information on how to use these new capabilities.
+
+

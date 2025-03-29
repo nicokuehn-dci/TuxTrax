@@ -8,7 +8,8 @@ Before installing TuxTrax, ensure that your system has the necessary dependencie
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y python3 python3-venv python3-dev build-essential libjack-jackd2-dev jackd2 qtbase5-dev libasound2-dev portaudio19-dev libportaudio2 libportaudiocpp0 ffmpeg git curl
+sudo apt-get install -y python3 python3-venv python3-dev build-essential pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse qtbase5-dev libasound2-dev portaudio19-dev libportaudio2 libportaudiocpp0 ffmpeg git curl
+
 ```
 
 ## Virtual Environment Setup

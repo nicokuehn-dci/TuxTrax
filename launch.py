@@ -4,12 +4,18 @@ import sys
 import subprocess
 import platform
 import shutil
+import argparse
+import logging
 from pathlib import Path
 
 # Configuration
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
 MIN_JACK_VERSION = (1, 9, 21)
-REQUIRED_BINARIES = ['jackd', 'ffmpeg', 'pulseaudio', 'aconnect', 'amidi', 'arecord']
+REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pulseaudio', 'aconnect', 'amidi', 'arecord']
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger(__name__)
 
 def print_header():
     print(r"""
@@ -22,17 +28,19 @@ def print_header():
     """)
 
 def check_audio_group():
-    groups = subprocess.check_output(['groups']).decode().split()
-    return 'audio' in groups
-
-def check_jack_version():
     try:
-        output = subprocess.check_output(['jackd', '-v'], stderr=subprocess.STDOUT)
-        version_str = output.decode().split()[2].strip('v')
-        version = tuple(map(int, version_str.split('.')))
-        return version >= MIN_JACK_VERSION
-    except Exception:
+        groups = subprocess.check_output(['groups']).decode().split()
+        return 'audio' in groups
+    except Exception as e:
+        logger.error(f"Error checking audio group: {e}")
         return False
+
+def check_pipewire_version():
+    output = subprocess.check_output(['pipewire', '--version'], stderr=subprocess.STDOUT)
+    version_str = output.decode().split()[1]
+    version = tuple(map(int, version_str.split('.')))
+    return version >= (0, 3, 50)
+
 
 def check_system_deps():
     missing = []
@@ -46,42 +54,68 @@ def setup_jack_config():
     if not jackdrc.exists():
         with open(jackdrc, 'w') as f:
             f.write("jackd -d alsa -r 48000 -p 256 -n 2")
+        logger.info("Created default JACK configuration at ~/.jackdrc")
 
 def configure_pulse_jack():
-    subprocess.run(['pactl', 'load-module', 'module-jack-sink'], check=True)
-    subprocess.run(['pactl', 'load-module', 'module-jack-source'], check=True)
-    subprocess.run(['pacmd', 'set-default-sink', 'jack_out'], check=True)
+    try:
+        subprocess.run(['pactl', 'load-module', 'module-jack-sink'], check=True)
+        subprocess.run(['pactl', 'load-module', 'module-jack-source'], check=True)
+        subprocess.run(['pacmd', 'set-default-sink', 'jack_out'], check=True)
+        logger.info("PulseAudio configured to work with JACK.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error configuring PulseAudio with JACK: {e}")
+        raise
 
 def setup_midi_devices():
-    print("🔧 Setting up MIDI devices...")
-    subprocess.run(['aconnect', '-i', '-o'], check=True)
-    subprocess.run(['amidi', '-l'], check=True)
+    try:
+        logger.info("🔧 Setting up MIDI devices...")
+        subprocess.run(['aconnect', '-i', '-o'], check=True)
+        subprocess.run(['amidi', '-l'], check=True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error setting up MIDI devices: {e}")
+        raise
 
 def setup_recording_choices():
-    print("🔧 Setting up recording choices...")
-    subprocess.run(['arecord', '-l'], check=True)
-    card_number = input("Enter the card number for recording: ")
-    device_number = input("Enter the device number for recording: ")
-    format = input("Enter the desired format (e.g., cd, dat): ")
-    bitrate = input("Enter the desired bitrate (e.g., 16, 24): ")
-    print(f"Recording configuration: Card {card_number}, Device {device_number}, Format {format}, Bitrate {bitrate}")
-    subprocess.run(['arecord', '-D', f'plughw:{card_number},{device_number}', '-f', format, '-r', bitrate, '-d', '10', 'test_recording.wav'], check=True)
+    try:
+        logger.info("🔧 Setting up recording choices...")
+        subprocess.run(['arecord', '-l'], check=True)
+        
+        while True:
+            card_number = input("Enter the card number for recording: ")
+            device_number = input("Enter the device number for recording: ")
+            format = input("Enter the desired format (e.g., cd, dat): ")
+            bitrate = input("Enter the desired bitrate (e.g., 16, 24): ")
+
+            if card_number.isdigit() and device_number.isdigit() and bitrate.isdigit():
+                break
+            else:
+                logger.error("Invalid input. Please enter numeric values for card/device/bitrate.")
+
+        logger.info(f"Recording configuration: Card {card_number}, Device {device_number}, Format {format}, Bitrate {bitrate}")
+        
+        subprocess.run(
+            ['arecord', '-D', f'plughw:{card_number},{device_number}', '-f', format, '-r', bitrate, '-d', '10', 'test_recording.wav'],
+            check=True,
+        )
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error setting up recording choices: {e}")
+        raise
 
 def setup_multitrack_recording():
-    print("🔧 Setting up multi-track recording...")
+    logger.info("🔧 Setting up multi-track recording...")
     # Add any necessary configuration or setup for multi-track recording here
 
 def launch_app():
-    print("🚀 Launching TuxTrax...")
     try:
+        logger.info("🚀 Launching TuxTrax...")
         subprocess.run(["tuxtrax"], check=True)
     except subprocess.CalledProcessError as e:
-        print(f"❌ Failed to launch: {e}")
+        logger.error(f"❌ Failed to launch TuxTrax: {e}")
     except KeyboardInterrupt:
-        print("\n🛑 Session terminated")
+        logger.info("\n🛑 Session terminated")
 
 def system_check():
-    print("🔍 Running system checks...")
+    logger.info("🔍 Running system checks...")
     issues = []
     
     if not check_audio_group():
@@ -94,33 +128,49 @@ def system_check():
         issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install jackd2 ffmpeg pulseaudio aconnect amidi arecord")
     
     if issues:
-        print("\n❌ System configuration issues:")
+        logger.error("\n❌ System configuration issues:")
         for i, issue in enumerate(issues, 1):
-            print(f"{i}. {issue}")
+            logger.error(f"{i}. {issue}")
         return False
     
+    return True
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Launch TuxTrax with system checks and configuration.")
+    parser.add_argument("--debug", action="store_true", help="Enable debug output")
+    return parser.parse_args()
+
+def main():
+    args = parse_args()
+    
+    # Set logging level based on debug flag
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    
+    print_header()
+    
+    # Run system checks before proceeding
+    if not system_check():
+        sys.exit(1)
+
+    # Perform configurations after successful system checks
     try:
         setup_jack_config()
         configure_pulse_jack()
         setup_midi_devices()
         setup_recording_choices()
         setup_multitrack_recording()
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Audio config failed: {e}")
-        return False
-
-def main():
-    print_header()
-    
-    if not system_check():
+        
+        # Launch application after all configurations are complete
+        launch_app()
+        
+    except Exception as e:
+        logger.error(f"\n❌ Setup failed: {e}")
         sys.exit(1)
-    
-    launch_app()
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n🛑 Operation cancelled")
-        sys.exit(0)
+        logger.info("\n🛑 Operation cancelled")
+

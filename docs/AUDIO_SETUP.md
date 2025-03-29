@@ -3,7 +3,7 @@
 ## 1. Required Packages
 ```bash
 # KX Studio variant (recommended)
-sudo apt-get install cadence carla jackd2
+sudo apt-get install cadence carla pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse
 
 # Minimal setup
 sudo apt-get install jackd2 pulseaudio-module-jack
