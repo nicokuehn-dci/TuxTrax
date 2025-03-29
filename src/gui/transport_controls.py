@@ -1,11 +1,12 @@
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QVBoxLayout, QLabel, QSlider
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 
 class TransportControls(QWidget):
     playClicked = pyqtSignal()
     stopClicked = pyqtSignal()
     recordClicked = pyqtSignal()
     automationChanged = pyqtSignal(int, float)  # (parameter index, value)
+    loop_loaded = pyqtSignal(str)  # Emits loop information
     
     def __init__(self):
         super().__init__()
@@ -45,3 +46,11 @@ class TransportControls(QWidget):
         layout.addLayout(transport_layout)
         layout.addLayout(automation_layout)
         self.setLayout(layout)
+
+    def load_loop(self, loop_name):
+        """Load a loop into the transport controls.
+        
+        Args:
+            loop_name (str): Name of the loop to load
+        """
+        self.loop_loaded.emit(loop_name)

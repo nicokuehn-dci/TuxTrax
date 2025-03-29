@@ -1,6 +1,9 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QDial, QLabel
+from PyQt5.QtCore import pyqtSignal
 
 class ElektronMenu(QWidget):
+    loop_loaded = pyqtSignal(str)  # Emits loop information
+
     def __init__(self):
         super().__init__()
         
@@ -21,3 +24,11 @@ class ElektronMenu(QWidget):
             self.encoders.append((encoder, label))
             
         self.setLayout(layout)
+
+    def load_loop(self, loop_name):
+        """Load a loop into the Elektron menu.
+        
+        Args:
+            loop_name (str): Name of the loop to load
+        """
+        self.loop_loaded.emit(loop_name)
