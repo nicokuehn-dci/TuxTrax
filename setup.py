@@ -1,10 +1,14 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="TuxTrax",
     version="0.1.0",
     packages=find_packages(where="src"),
-    package_dir={"": "src"},
+    package_dir={"": "src"},  # Tell setuptools that packages are under the 'src' directory
     install_requires=[
         # Keep only Python dependencies
         'numpy>=1.26',
@@ -20,7 +24,12 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'tuxtrax=main:main',
+            'tuxtrax=main:MainWindow', # Changed entry point
         ],
     },
+    package_data={
+        '': ['*.yaml'],  # Include any .yaml files in the package
+    },
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 )

@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget
 from gui.elektron_menu import ElektronMenu
 from gui.performance_grid import PerformanceGrid
 from sampler.waveform_editor import WaveformEditor
@@ -31,9 +31,12 @@ class MainWindow(QMainWindow):
         self.menu = ElektronMenu()
         self.addDockWidget(1, QDockWidget("Controls", self)).setWidget(self.menu)
 
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
     window = MainWindow()
     window.setGeometry(100, 100, 1280, 720)
     window.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()

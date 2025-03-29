@@ -7,8 +7,8 @@ import shutil
 from pathlib import Path
 
 # Configuration
-VENV_NAME = "daw_env"
-REQUIREMENTS_FILE = "requirements.txt"
+# VENV_NAME = "daw_env" # Removed
+# REQUIREMENTS_FILE = "requirements.txt" # Removed
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
 MIN_JACK_VERSION = (1, 9, 21)
 REQUIRED_BINARIES = ['jackd', 'ffmpeg', 'pulseaudio']
@@ -23,9 +23,9 @@ def print_header():
        ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
     """)
 
-def check_venv():
-    venv_path = Path(VENV_NAME)
-    return (venv_path / "bin" / "activate").exists()
+# def check_venv(): # Removed
+#     venv_path = Path(VENV_NAME)
+#     return (venv_path / "bin" / "activate").exists() # Removed
 
 def check_audio_group():
     groups = subprocess.check_output(['groups']).decode().split()
@@ -58,24 +58,25 @@ def configure_pulse_jack():
     subprocess.run(['pactl', 'load-module', 'module-jack-source'], check=True)
     subprocess.run(['pacmd', 'set-default-sink', 'jack_out'], check=True)
 
-def setup_environment():
-    print("⚙️ Setting up environment...")
-    try:
-        subprocess.run([PYTHON_CMD, "-m", "venv", VENV_NAME], check=True)
-        pip_path = str(Path(VENV_NAME)) / "bin" / "pip"
-        subprocess.run([pip_path, "install", "-r", REQUIREMENTS_FILE], check=True)
-        subprocess.run([pip_path, "install", "-e", "."], check=True)
-        print("✅ Environment setup complete!")
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Setup failed: {e}")
-        return False
+# def setup_environment(): # Removed
+#     print("⚙️ Setting up environment...") # Removed
+#     try: # Removed
+#         subprocess.run([PYTHON_CMD, "-m", "venv", VENV_NAME], check=True) # Removed
+#         pip_path = str(Path(VENV_NAME)) / "bin" / "pip" # Removed
+#         subprocess.run([pip_path, "install", "-r", REQUIREMENTS_FILE], check=True) # Removed
+#         subprocess.run([pip_path, "install", "-e", "."], check=True) # Removed
+#         print("✅ Environment setup complete!") # Removed
+#         return True # Removed
+#     except subprocess.CalledProcessError as e: # Removed
+#         print(f"❌ Setup failed: {e}") # Removed
+#         return False # Removed
 
 def launch_app():
     print("🚀 Launching TuxTrax...")
     try:
-        python_path = str(Path(VENV_NAME)) / "bin" / "python"
-        subprocess.run([python_path, "-m", "tuxtrax"], check=True)
+        # python_path = str(Path(VENV_NAME)) / "bin" / "python" # Removed
+        # subprocess.run([python_path, "-m", "tuxtrax"], check=True) # Removed
+        subprocess.run(["tuxtrax"], check=True) # Changed
     except subprocess.CalledProcessError as e:
         print(f"❌ Failed to launch: {e}")
     except KeyboardInterrupt:
@@ -114,14 +115,14 @@ def main():
     if not system_check():
         sys.exit(1)
     
-    if not check_venv():
-        print("🛠️ Virtual environment missing")
-        if input("Setup environment? [Y/n]: ").lower() != 'n':
-            if not setup_environment():
-                sys.exit(1)
-        else:
-            print("❌ Setup aborted")
-            sys.exit(1)
+    # if not check_venv(): # Removed
+    #     print("🛠️ Virtual environment missing") # Removed
+    #     if input("Setup environment? [Y/n]: ").lower() != 'n': # Removed
+    #         if not setup_environment(): # Removed
+    #             sys.exit(1) # Removed
+    #     else: # Removed
+    #         print("❌ Setup aborted") # Removed
+    #         sys.exit(1) # Removed
     
     launch_app()
 
