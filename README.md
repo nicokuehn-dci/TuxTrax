@@ -228,6 +228,25 @@ We welcome contributions from the open-source community! Whether you're a season
 ## Detailed Setup Guide
 
 For detailed installation and configuration instructions, please refer to the [Setup Guide](docs/SETUP.md). This guide includes step-by-step instructions for installing TuxTrax on Ubuntu, including system dependencies, virtual environment setup, and configuring JACK audio.
----
 
-Made with ❤️ for the love of music and open source by Nico Kühn.
+## New Features
+
+### Audio Loops and Auto Quantize to BPM
+
+TuxTrax now includes handling for audio loops and auto quantize to BPM. This allows you to seamlessly integrate loops into your projects and ensure they are perfectly in sync with your desired tempo.
+
+### Time-Stretching
+
+With the new time-stretching feature, you can adjust the tempo of your audio samples without affecting their pitch. This is particularly useful for creating remixes or matching the tempo of different samples.
+
+### High-Quality Output
+
+TuxTrax now offers high-quality output options, ensuring your final mix sounds professional and polished. This includes advanced processing techniques to enhance the overall sound quality.
+
+### MIDI Auto Quantize
+
+The MIDI auto quantize feature allows you to automatically align your MIDI notes to the nearest beat, ensuring tight and precise timing in your performances.
+
+### Updated Documentation
+
+The documentation has been updated to reflect these new features. Be sure to check out the [Quickstart Guide](docs/quickstart.md) for more information on how to use these new capabilities.

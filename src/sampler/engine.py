@@ -36,11 +36,14 @@ class SamplerEngine:
             bool: True if the sample was loaded successfully
         """
         audio_data, sr = load_audio_file(file_path)
+        bpm = self._detect_bpm(audio_data, sr)
+        quantized_audio = self._quantize_to_bpm(audio_data, sr, bpm)
         self.samples[name] = {
-            'data': audio_data,
+            'data': quantized_audio,
             'sr': sr,
-            'length': len(audio_data),
-            'key': self._detect_key(audio_data, sr)
+            'length': len(quantized_audio),
+            'key': self._detect_key(quantized_audio, sr),
+            'bpm': bpm
         }
         return True
 
@@ -56,6 +59,33 @@ class SamplerEngine:
         """
         chroma = librosa.feature.chroma_cqt(y=audio_data, sr=sr)
         return librosa.core.key_to_notes(np.argmax(chroma.mean(axis=1)))[0]
+
+    def _detect_bpm(self, audio_data, sr):
+        """Detect the BPM of the audio sample.
+        
+        Args:
+            audio_data (np.ndarray): Audio data array
+            sr (int): Sample rate of the audio data
+            
+        Returns:
+            float: Detected BPM of the audio sample
+        """
+        tempo, _ = librosa.beat.beat_track(y=audio_data, sr=sr)
+        return tempo
+
+    def _quantize_to_bpm(self, audio_data, sr, bpm):
+        """Quantize the audio sample to the given BPM.
+        
+        Args:
+            audio_data (np.ndarray): Audio data array
+            sr (int): Sample rate of the audio data
+            bpm (float): BPM to quantize the audio to
+            
+        Returns:
+            np.ndarray: Quantized audio data
+        """
+        hop_length = int(60 / bpm * sr)
+        return librosa.effects.time_stretch(audio_data, hop_length)
 
     def map_to_midi(self, sample_name, midi_note):
         """Map a sample to a MIDI note.
@@ -134,3 +164,22 @@ class SamplerEngine:
         """
         if 0 <= lane_index < len(self.automation_lanes):
             self.automation_lanes[lane_index]['data'].append(automation_data)
+
+    def fetch_high_quality_output(self, sample_name):
+        """Fetch high-quality output for a sample.
+        
+        Args:
+            sample_name (str): Name of the sample to fetch output for
+            
+        Returns:
+            np.ndarray: High-quality audio data
+        """
+        if sample_name not in self.samples:
+            return np.array([])
+        
+        sample = self.samples[sample_name]
+        audio_data = sample['data']
+        
+        # Apply any additional processing here (e.g., effects, mastering)
+        
+        return audio_data

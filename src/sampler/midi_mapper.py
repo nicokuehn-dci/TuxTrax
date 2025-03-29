@@ -45,3 +45,24 @@ class MidiMapper:
         if note in self.mapping:
             # Add sample triggering logic
             print(f"Triggering sample: {self.mapping[note]} with velocity {velocity}")
+
+    def auto_quantize_midi(self, midi_data, bpm):
+        """Auto quantize MIDI data to the given BPM.
+        
+        Args:
+            midi_data (list): List of MIDI messages
+            bpm (float): BPM to quantize the MIDI to
+            
+        Returns:
+            list: Quantized MIDI messages
+        """
+        quantized_midi = []
+        tick_duration = 60 / bpm / 24  # Assuming 24 ticks per quarter note
+        for msg in midi_data:
+            if msg.type in ['note_on', 'note_off']:
+                quantized_time = round(msg.time / tick_duration) * tick_duration
+                quantized_msg = msg.copy(time=quantized_time)
+                quantized_midi.append(quantized_msg)
+            else:
+                quantized_midi.append(msg)
+        return quantized_midi
