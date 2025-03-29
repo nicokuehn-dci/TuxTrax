@@ -5,11 +5,14 @@ from gui.performance_grid import PerformanceGrid
 from sampler.waveform_editor import WaveformEditor
 from sampler.engine import SamplerEngine
 from mixer.channel_strip import ChannelStrip
+from src.sampler.midi_mapper import MidiMapper
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.sampler = SamplerEngine()
+        self.midi_mapper = MidiMapper()
+        self.midi_mapper.start_listening_thread()
         self._setup_ui()
         
     def _setup_ui(self):
@@ -30,6 +33,9 @@ class MainWindow(QMainWindow):
         # Elektron-style menu
         self.menu = ElektronMenu()
         self.addDockWidget(1, QDockWidget("Controls", self)).setWidget(self.menu)
+
+    def __del__(self):
+        self.midi_mapper.stop_listening()
 
 def main():
     app = QApplication(sys.argv)
