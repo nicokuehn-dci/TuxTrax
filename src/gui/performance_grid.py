@@ -3,6 +3,7 @@ from PyQt5.QtCore import pyqtSignal
 
 class PerformanceGrid(QGridLayout):
     pad_triggered = pyqtSignal(int)  # Emits pad index (0-15)
+    loop_triggered = pyqtSignal(int)  # Emits loop index
 
     def __init__(self):
         super().__init__()
@@ -25,5 +26,14 @@ class PerformanceGrid(QGridLayout):
                     }
                 """)
                 btn.clicked.connect(lambda _, idx=i*4+j: self.pad_triggered.emit(idx))
+                btn.clicked.connect(lambda _, idx=i*4+j: self.loop_triggered.emit(idx))
                 self.addWidget(btn, i, j)
                 self.pads.append(btn)
+
+    def load_loop(self, loop_index):
+        """Load a loop into the performance grid.
+        
+        Args:
+            loop_index (int): Index of the loop to load
+        """
+        self.loop_triggered.emit(loop_index)

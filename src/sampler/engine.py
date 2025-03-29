@@ -8,6 +8,7 @@ class SamplerEngine:
     
     Attributes:
         samples (dict): Stores loaded samples with metadata
+        loops (dict): Stores loaded loops with metadata
         midi_mapper (MidiMapper): Handles MIDI input mapping
         current_bpm (int): Current beats per minute for playback
         playback_mode (str): Mode of playback (e.g., "one-shot")
@@ -17,6 +18,7 @@ class SamplerEngine:
     
     def __init__(self):
         self.samples = {}
+        self.loops = {}
         self.midi_mapper = MidiMapper()
         self.current_bpm = 120
         self.playback_mode = "one-shot"
@@ -25,12 +27,13 @@ class SamplerEngine:
         self._setup_multitrack()
         self._setup_automation_lanes()
 
-    def load_sample(self, file_path, name):
+    def load_sample(self, file_path, name, is_loop=False):
         """Load an audio file into the sampler.
         
         Args:
             file_path (str): Path to the audio file
             name (str): Name to assign to the loaded sample
+            is_loop (bool): Whether the sample is a loop
             
         Returns:
             bool: True if the sample was loaded successfully
@@ -38,14 +41,30 @@ class SamplerEngine:
         audio_data, sr = load_audio_file(file_path)
         bpm = self._detect_bpm(audio_data, sr)
         quantized_audio = self._quantize_to_bpm(audio_data, sr, bpm)
-        self.samples[name] = {
+        sample_data = {
             'data': quantized_audio,
             'sr': sr,
             'length': len(quantized_audio),
             'key': self._detect_key(quantized_audio, sr),
             'bpm': bpm
         }
+        if is_loop:
+            self.loops[name] = sample_data
+        else:
+            self.samples[name] = sample_data
         return True
+
+    def load_loop(self, file_path, name):
+        """Load a loop into the sampler.
+        
+        Args:
+            file_path (str): Path to the loop file
+            name (str): Name to assign to the loaded loop
+            
+        Returns:
+            bool: True if the loop was loaded successfully
+        """
+        return self.load_sample(file_path, name, is_loop=True)
 
     def _detect_key(self, audio_data, sr):
         """Detect the musical key of the audio sample.
@@ -97,21 +116,27 @@ class SamplerEngine:
         if sample_name in self.samples:
             self.midi_mapper.map_note_to_sample(midi_note, sample_name)
 
-    def process_audio(self, sample_name, start, end):
+    def process_audio(self, sample_name, start, end, is_loop=False):
         """Process audio for playback.
         
         Args:
             sample_name (str): Name of the sample to process
             start (int): Start index for playback
             end (int): End index for playback
+            is_loop (bool): Whether the sample is a loop
             
         Returns:
             np.ndarray: Processed audio data
         """
-        if sample_name not in self.samples:
+        if is_loop:
+            sample_dict = self.loops
+        else:
+            sample_dict = self.samples
+
+        if sample_name not in sample_dict:
             return np.array([])
         
-        sample = self.samples[sample_name]
+        sample = sample_dict[sample_name]
         audio_data = sample['data'][start:end]
         
         # Apply any additional processing here (e.g., effects, envelopes)
