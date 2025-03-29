@@ -6,15 +6,16 @@ from gui.transport_controls import TransportControls
 from sampler.waveform_editor import WaveformEditor
 from sampler.engine import SamplerEngine
 from mixer.channel_strip import ChannelStrip
-from src.sampler.midi_mapper import MidiMapper
+from src.sampler.midi_mapper import MidiWorker, MidiManager
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.sampler = SamplerEngine()
-        self.midi_mapper = MidiMapper()
-        self.midi_mapper.start_listening_thread()
+        self.midi_manager = MidiManager()
+        self.midi_manager.start()
         self._setup_ui()
+        self._connect_midi_signals()
         
     def _setup_ui(self):
         # Central waveform editor
@@ -39,8 +40,18 @@ class MainWindow(QMainWindow):
         self.transport_controls = TransportControls()
         self.addDockWidget(1, QDockWidget("Transport", self)).setWidget(self.transport_controls)
 
+    def _connect_midi_signals(self):
+        self.midi_manager.worker.note_on.connect(self.handle_note_on)
+        self.midi_manager.worker.cc_changed.connect(self.handle_cc_changed)
+
+    def handle_note_on(self, note, velocity):
+        print(f"Note on: {note} with velocity {velocity}")
+
+    def handle_cc_changed(self, cc_number, value):
+        print(f"CC changed: {cc_number} with value {value}")
+
     def __del__(self):
-        self.midi_mapper.stop_listening()
+        self.midi_manager.stop()
 
 def main():
     app = QApplication(sys.argv)
