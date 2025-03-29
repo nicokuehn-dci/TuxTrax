@@ -20,4 +20,7 @@ class WaveformEditor(pg.PlotWidget):
         self.addItem(self.loop_region)
 
     def load_audio(self, data):
-        self.waveform.setData(data)
+        self.waveform.setData(self.decimate_data(data))
+
+    def decimate_data(self, data, factor=10):
+        return data[::factor]
