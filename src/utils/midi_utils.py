@@ -20,3 +20,9 @@ class MidiHandler:
         if self.active_output:
             with mido.open_output(self.active_output) as outport:
                 outport.send(msg)
+
+    def receive_midi(self):
+        if self.active_input:
+            with mido.open_input(self.active_input) as inport:
+                for msg in inport:
+                    print(f"Received message: {msg}")

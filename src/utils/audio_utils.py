@@ -12,3 +12,8 @@ def convert_format(input_path, output_format='wav'):
     output_path = input_path.rsplit('.', 1)[0] + f'.{output_format}'
     sound.export(output_path, format=output_format)
     return output_path
+
+def load_audio_into_memory(file_path):
+    """Load audio file into memory using librosa"""
+    audio_data, sr = librosa.load(file_path, sr=None, mono=False)
+    return audio_data, sr

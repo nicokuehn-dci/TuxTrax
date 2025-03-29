@@ -1,5 +1,7 @@
 import sys
 import sounddevice as sounddevice
+import numpy as np
+from threading import Thread, Lock
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget
 from gui.elektron_menu import ElektronMenu
 from gui.performance_grid import PerformanceGrid
@@ -8,6 +10,7 @@ from sampler.waveform_editor import WaveformEditor
 from sampler.engine import SamplerEngine
 from mixer.channel_strip import ChannelStrip
 from src.sampler.midi_mapper import MidiMapper
+from pedalboard import Pedalboard
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -16,6 +19,9 @@ class MainWindow(QMainWindow):
         self.midi_mapper = MidiMapper()
         self.midi_mapper.start_listening_thread()
         self._setup_ui()
+        self.audio_engine = AudioEngine()
+        self.audio_thread = Thread(target=self.audio_engine.start)
+        self.audio_thread.start()
         
     def _setup_ui(self):
         # Central waveform editor
@@ -42,6 +48,8 @@ class MainWindow(QMainWindow):
 
     def __del__(self):
         self.midi_mapper.stop_listening()
+        self.audio_engine.stop()
+        self.audio_thread.join()
 
 class AudioEngine:
     def __init__(self, sr=48000, buffer_size=512):

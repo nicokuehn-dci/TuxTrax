@@ -1,4 +1,5 @@
 import numpy as np
+import librosa
 from .midi_mapper import MidiMapper
 from ..utils.audio_utils import load_audio_file
 
@@ -59,3 +60,24 @@ class SamplerEngine:
         """
         if sample_name in self.samples:
             self.midi_mapper.map_note_to_sample(midi_note, sample_name)
+
+    def process_audio(self, sample_name, start, end):
+        """Process audio for playback.
+        
+        Args:
+            sample_name (str): Name of the sample to process
+            start (int): Start index for playback
+            end (int): End index for playback
+            
+        Returns:
+            np.ndarray: Processed audio data
+        """
+        if sample_name not in self.samples:
+            return np.array([])
+        
+        sample = self.samples[sample_name]
+        audio_data = sample['data'][start:end]
+        
+        # Apply any additional processing here (e.g., effects, envelopes)
+        
+        return audio_data

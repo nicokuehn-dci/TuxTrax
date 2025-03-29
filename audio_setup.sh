@@ -130,6 +130,11 @@ setup_recording_choices() {
     arecord -D plughw:$card_number,$device_number -f $format -r $bitrate -d 10 test_recording.wav
 }
 
+install_virtual_audio_cable() {
+    echo -e "${YELLOW}Installing virtual audio cable...${NC}"
+    sudo apt-get install -y zita-ajbridge || handle_error "Failed to install virtual audio cable"
+}
+
 main() {
     check_dependencies
     if ! verify_jack; then
@@ -140,6 +145,7 @@ main() {
     post_install_check
     setup_midi_devices
     setup_recording_choices
+    install_virtual_audio_cable
     
     echo -e "\n${GREEN}Audio setup completed successfully!${NC}"
     echo -e "Next steps:"

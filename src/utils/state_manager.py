@@ -16,3 +16,11 @@ class ProjectManager:
     def load_project(self, path):
         with open(Path(path) / 'project.tux', 'rb') as f:
             return pickle.load(f)
+
+    def save_state(self, path, state):
+        with open(Path(path) / 'state.json', 'w') as f:
+            json.dump(state, f)
+
+    def load_state(self, path):
+        with open(Path(path) / 'state.json', 'r') as f:
+            return json.load(f)

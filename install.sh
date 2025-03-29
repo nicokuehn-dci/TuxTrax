@@ -65,6 +65,15 @@ echo "📦 Installing Python dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
+# Install and configure Jack and virtual audio cables
+echo "🔧 Installing and configuring Jack and virtual audio cables..."
+sudo apt install -y jackd2 zita-ajbridge
+
+# Configure PulseAudio bridge
+echo "🔧 Configuring PulseAudio bridge..."
+pactl load-module module-jack-sink
+pactl load-module module-jack-source
+
 echo "✅ Installation complete!"
 echo ""
 echo "🚀 To run TuxTrax:"
