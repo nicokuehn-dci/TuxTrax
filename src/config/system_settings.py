@@ -1,34 +1,33 @@
 import configparser
-from pathlib import Path
 
-class AudioMIDISettings:
-    def __init__(self):
-        self.config = configparser.ConfigParser()
-        self.config_path = Path.home() / '.config' / 'tuxtrax' / 'settings.ini'
-        self._load_defaults()
-        self.load()
-        
-    def _load_defaults(self):
-        self.config['Audio'] = {
-            'device': 'default',
-            'samplerate': '48000',
-            'buffersize': '256',
-            'latency_comp': '0'
-        }
-        self.config['MIDI'] = {
-            'inputs': '',
-            'sync': '0'
-        }
-        
-    def save(self):
-        self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.config_path, 'w') as f:
-            self.config.write(f)
-    
-    def load(self):
-        if self.config_path.exists():
-            self.config.read(self.config_path)
-    
-    @property
-    def buffer_size(self):
-        return self.config['Audio'].getint('buffersize')
+config = configparser.ConfigParser()
+
+# Default settings
+config['Audio'] = {
+    'sample_rate': '44100',
+    'buffer_size': '512',
+    'default_path': '~/samples'
+}
+
+config['MIDI'] = {
+    'default_port': '0',
+    'velocity_curve': 'exponential'
+}
+
+config['GUI'] = {
+    'theme': 'dark',
+    'default_scale': 'C Major'
+}
+
+# Write default settings to file
+with open('system_settings.ini', 'w') as configfile:
+    config.write(configfile)
+
+def read_settings():
+    config.read('system_settings.ini')
+    return config
+
+def write_settings(section, option, value):
+    config.set(section, option, value)
+    with open('system_settings.ini', 'w') as configfile:
+        config.write(configfile)
