@@ -1,0 +1,12 @@
+audio:
+  sample_rate: 44100
+  buffer_size: 512
+  default_path: ~/samples
+
+midi:
+  default_port: 0
+  velocity_curve: exponential
+
+gui:
+  theme: dark
+  default_scale: C Major

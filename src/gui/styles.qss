@@ -1,0 +1,23 @@
+QMainWindow {
+    background-color: #2d2d2d;
+}
+
+QDockWidget {
+    titlebar-close-icon: none;
+    titlebar-normal-icon: none;
+    font: 12px "Roboto Mono";
+    color: #ffffff;
+}
+
+QSlider::groove:vertical {
+    background: #404040;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QSlider::handle:vertical {
+    background: #00ff00;
+    height: 12px;
+    margin: 0 -4px;
+    border-radius: 6px;
+}
