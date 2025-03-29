@@ -9,7 +9,7 @@ from pathlib import Path
 # Configuration
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
 MIN_JACK_VERSION = (1, 9, 21)
-REQUIRED_BINARIES = ['jackd', 'ffmpeg', 'pulseaudio']
+REQUIRED_BINARIES = ['jackd', 'ffmpeg', 'pulseaudio', 'aconnect', 'amidi', 'arecord']
 
 def print_header():
     print(r"""
@@ -52,6 +52,21 @@ def configure_pulse_jack():
     subprocess.run(['pactl', 'load-module', 'module-jack-source'], check=True)
     subprocess.run(['pacmd', 'set-default-sink', 'jack_out'], check=True)
 
+def setup_midi_devices():
+    print("🔧 Setting up MIDI devices...")
+    subprocess.run(['aconnect', '-i', '-o'], check=True)
+    subprocess.run(['amidi', '-l'], check=True)
+
+def setup_recording_choices():
+    print("🔧 Setting up recording choices...")
+    subprocess.run(['arecord', '-l'], check=True)
+    card_number = input("Enter the card number for recording: ")
+    device_number = input("Enter the device number for recording: ")
+    format = input("Enter the desired format (e.g., cd, dat): ")
+    bitrate = input("Enter the desired bitrate (e.g., 16, 24): ")
+    print(f"Recording configuration: Card {card_number}, Device {device_number}, Format {format}, Bitrate {bitrate}")
+    subprocess.run(['arecord', '-D', f'plughw:{card_number},{device_number}', '-f', format, '-r', bitrate, '-d', '10', 'test_recording.wav'], check=True)
+
 def launch_app():
     print("🚀 Launching TuxTrax...")
     try:
@@ -72,7 +87,7 @@ def system_check():
         issues.append(f"JACK2 >= {'.'.join(map(str, MIN_JACK_VERSION))} required")
     
     if missing := check_system_deps():
-        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install jackd2 ffmpeg pulseaudio")
+        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install jackd2 ffmpeg pulseaudio aconnect amidi arecord")
     
     if issues:
         print("\n❌ System configuration issues:")
@@ -83,6 +98,8 @@ def system_check():
     try:
         setup_jack_config()
         configure_pulse_jack()
+        setup_midi_devices()
+        setup_recording_choices()
         return True
     except subprocess.CalledProcessError as e:
         print(f"❌ Audio config failed: {e}")

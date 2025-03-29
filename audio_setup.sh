@@ -106,6 +106,30 @@ post_install_check() {
     pactl load-module module-jack-source >/dev/null || handle_error "Failed to load JACK source"
 }
 
+setup_midi_devices() {
+    echo -e "${YELLOW}Setting up MIDI devices...${NC}"
+    sudo apt-get install -y aconnectgui amidi || handle_error "Failed to install MIDI tools"
+    
+    echo -e "${YELLOW}Listing available MIDI devices...${NC}"
+    aconnect -i -o
+    amidi -l
+}
+
+setup_recording_choices() {
+    echo -e "${YELLOW}Setting up recording choices...${NC}"
+    sudo apt-get install -y alsa-utils || handle_error "Failed to install ALSA utilities"
+    
+    echo -e "${YELLOW}Configuring recording format and bitrate...${NC}"
+    arecord -l
+    read -p "Enter the card number for recording: " card_number
+    read -p "Enter the device number for recording: " device_number
+    read -p "Enter the desired format (e.g., cd, dat): " format
+    read -p "Enter the desired bitrate (e.g., 16, 24): " bitrate
+    
+    echo -e "${YELLOW}Recording configuration: Card $card_number, Device $device_number, Format $format, Bitrate $bitrate${NC}"
+    arecord -D plughw:$card_number,$device_number -f $format -r $bitrate -d 10 test_recording.wav
+}
+
 main() {
     check_dependencies
     if ! verify_jack; then
@@ -114,6 +138,8 @@ main() {
     configure_permissions
     install_tools
     post_install_check
+    setup_midi_devices
+    setup_recording_choices
     
     echo -e "\n${GREEN}Audio setup completed successfully!${NC}"
     echo -e "Next steps:"
