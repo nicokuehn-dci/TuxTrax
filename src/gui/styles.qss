@@ -21,3 +21,28 @@ QSlider::handle:vertical {
     margin: 0 -4px;
     border-radius: 6px;
 }
+
+/* Elektron Digitakt Style */
+QPushButton {
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 5px;
+    color: #fff;
+    font: bold 14px "Roboto Mono";
+    padding: 5px;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QDial {
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 50%;
+}
+
+QLabel {
+    color: #fff;
+    font: 12px "Roboto Mono";
+}

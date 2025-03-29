@@ -1,7 +1,53 @@
-# src/main.py
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget
+from gui.elektron_menu import ElektronMenu
+from gui.performance_grid import PerformanceGrid
+from gui.transport_controls import TransportControls
+from sampler.waveform_editor import WaveformEditor
+from sampler.engine import SamplerEngine
+from mixer.channel_strip import ChannelStrip
+from src.sampler.midi_mapper import MidiMapper
 
-from gui.main_window import run_gui
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.sampler = SamplerEngine()
+        self.midi_mapper = MidiMapper()
+        self.midi_mapper.start_listening_thread()
+        self._setup_ui()
+        
+    def _setup_ui(self):
+        # Central waveform editor
+        self.waveform_editor = WaveformEditor()
+        self.setCentralWidget(self.waveform_editor)
+        
+        # Dock widgets
+        self.mixer_dock = QDockWidget("Mixer", self)
+        self.mixer_dock.setWidget(ChannelStrip())
+        self.addDockWidget(2, self.mixer_dock)
+        
+        self.grid = PerformanceGrid()
+        grid_widget = QWidget()
+        grid_widget.setLayout(self.grid)
+        self.addDockWidget(1, QDockWidget("Performance Grid", self)).setWidget(grid_widget)
+        
+        # Elektron-style menu
+        self.menu = ElektronMenu()
+        self.addDockWidget(1, QDockWidget("Controls", self)).setWidget(self.menu)
+        
+        # Transport controls
+        self.transport_controls = TransportControls()
+        self.addDockWidget(1, QDockWidget("Transport", self)).setWidget(self.transport_controls)
+
+    def __del__(self):
+        self.midi_mapper.stop_listening()
+
+def main():
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.setGeometry(100, 100, 1280, 720)
+    window.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    print("🎧 Launching TuxTrax...")
-    run_gui()
+    main()
