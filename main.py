@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget
 from gui.elektron_menu import ElektronMenu
 from gui.performance_grid import PerformanceGrid
+from gui.transport_controls import TransportControls
 from sampler.waveform_editor import WaveformEditor
 from sampler.engine import SamplerEngine
 from mixer.channel_strip import ChannelStrip
@@ -33,6 +34,10 @@ class MainWindow(QMainWindow):
         # Elektron-style menu
         self.menu = ElektronMenu()
         self.addDockWidget(1, QDockWidget("Controls", self)).setWidget(self.menu)
+        
+        # Transport controls
+        self.transport_controls = TransportControls()
+        self.addDockWidget(1, QDockWidget("Transport", self)).setWidget(self.transport_controls)
 
     def __del__(self):
         self.midi_mapper.stop_listening()

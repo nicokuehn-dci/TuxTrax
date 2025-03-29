@@ -24,7 +24,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'tuxtrax=main:MainWindow', # Changed entry point
+            'tuxtrax=main:main', # Changed entry point
         ],
     },
     package_data={
