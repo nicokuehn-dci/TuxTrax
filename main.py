@@ -1,4 +1,7 @@
 import sys
+import sounddevice as sounddevice
+import numpy as np
+from threading import Thread, Lock
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget
 from gui.elektron_menu import ElektronMenu
 from gui.performance_grid import PerformanceGrid
@@ -6,20 +9,19 @@ from gui.transport_controls import TransportControls
 from sampler.waveform_editor import WaveformEditor
 from sampler.engine import SamplerEngine
 from mixer.channel_strip import ChannelStrip
-from src.sampler.midi_mapper import MidiWorker, MidiManager
+from src.sampler.midi_mapper import MidiMapper
+from pedalboard import Pedalboard
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.sampler = SamplerEngine()
-        self.midi_manager = MidiManager()
-        self.midi_manager.start()
+        self.midi_mapper = MidiMapper()
+        self.midi_mapper.start_listening_thread()
         self._setup_ui()
-        self._connect_midi_signals()
-        self.tracks = []
-        self.automation_lanes = []
-        self._setup_multitrack()
-        self._setup_automation_lanes()
+        self.audio_engine = AudioEngine()
+        self.audio_thread = Thread(target=self.audio_engine.start)
+        self.audio_thread.start()
         
     def _setup_ui(self):
         # Central waveform editor
@@ -44,35 +46,42 @@ class MainWindow(QMainWindow):
         self.transport_controls = TransportControls()
         self.addDockWidget(1, QDockWidget("Transport", self)).setWidget(self.transport_controls)
 
-    def _connect_midi_signals(self):
-        self.midi_manager.worker.note_on.connect(self.handle_note_on)
-        self.midi_manager.worker.cc_changed.connect(self.handle_cc_changed)
-
-    def handle_note_on(self, note, velocity):
-        print(f"Note on: {note} with velocity {velocity}")
-
-    def handle_cc_changed(self, cc_number, value):
-        print(f"CC changed: {cc_number} with value {value}")
-
-    def _setup_multitrack(self):
-        for i in range(8):  # Example: 8 tracks
-            track = {
-                'name': f'Track {i+1}',
-                'audio_data': [],
-                'midi_data': []
-            }
-            self.tracks.append(track)
-
-    def _setup_automation_lanes(self):
-        for i in range(8):  # Example: 8 automation lanes
-            lane = {
-                'name': f'Automation Lane {i+1}',
-                'data': []
-            }
-            self.automation_lanes.append(lane)
-
     def __del__(self):
-        self.midi_manager.stop()
+        self.midi_mapper.stop_listening()
+        self.audio_engine.stop()
+        self.audio_thread.join()
+
+class AudioEngine:
+    def __init__(self, sr=48000, buffer_size=512):
+        self.sr = sr
+        self.buffer_size = buffer_size
+        self.mix_buffer = np.zeros((buffer_size, 2), dtype=np.float32)
+        self.lock = Lock()
+        self.fx_rack = Pedalboard()
+        
+        self.stream = sounddevice.OutputStream(
+            samplerate=sr,
+            blocksize=buffer_size,
+            callback=self._callback,
+            dtype='float32'
+        )
+
+    def _callback(self, outdata, frames, time, status):
+        with self.lock:
+            processed = self.fx_rack.process(self.mix_buffer, self.sr)
+            outdata[:] = processed
+            self.mix_buffer.fill(0)
+
+    def add_audio(self, audio):
+        with self.lock:
+            end = min(len(audio), self.buffer_size)
+            self.mix_buffer[:end] += audio[:end]
+
+    def start(self):
+        self.stream.start()
+
+    def stop(self):
+        self.stream.stop()
 
 def main():
     app = QApplication(sys.argv)
