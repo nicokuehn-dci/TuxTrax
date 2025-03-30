@@ -40,6 +40,15 @@ def check_pipewire_version():
     version = tuple(map(int, version_str.split('.')))
     return version >= (0, 3, 50)
 
+def check_pipewire_configuration():
+    try:
+        subprocess.run(['pw-cli', 'info'], check=True)
+        logger.info("PipeWire is configured and running.")
+        return True
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error checking PipeWire configuration: {e}")
+        return False
+
 def check_system_deps():
     missing = []
     for bin in REQUIRED_BINARIES:
@@ -53,6 +62,19 @@ def configure_pipewire():
         logger.info("PipeWire is configured and running.")
     except subprocess.CalledProcessError as e:
         logger.error(f"Error configuring PipeWire: {e}")
+        raise
+
+def configure_pipewire_audio_midi():
+    try:
+        logger.info("🔧 Configuring PipeWire for audio and MIDI...")
+        subprocess.run(['pw-cli', 'info'], check=True)
+        subprocess.run(['pw-cli', 'load-module', 'module-alsa-source'], check=True)
+        subprocess.run(['pw-cli', 'load-module', 'module-alsa-sink'], check=True)
+        subprocess.run(['pw-cli', 'load-module', 'module-jack-source'], check=True)
+        subprocess.run(['pw-cli', 'load-module', 'module-jack-sink'], check=True)
+        logger.info("PipeWire audio and MIDI configuration complete.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error configuring PipeWire for audio and MIDI: {e}")
         raise
 
 def setup_midi_devices():
@@ -113,6 +135,9 @@ def system_check():
     if not check_pipewire_version():
         issues.append(f"PipeWire >= 0.3.50 required")
     
+    if not check_pipewire_configuration():
+        issues.append("PipeWire is not properly configured")
+    
     if missing := check_system_deps():
         issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install pipewire ffmpeg pulseaudio aconnect amidi arecord")
     
@@ -145,6 +170,7 @@ def main():
     # Perform configurations after successful system checks
     try:
         configure_pipewire()
+        configure_pipewire_audio_midi()
         setup_midi_devices()
         setup_recording_choices()
         setup_multitrack_recording()

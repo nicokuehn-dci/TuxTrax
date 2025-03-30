@@ -96,6 +96,16 @@ install_virtual_audio_cable() {
     sudo apt-get install -y zita-ajbridge || handle_error "Failed to install virtual audio cable"
 }
 
+configure_pipewire_audio_midi() {
+    echo -e "${YELLOW}Configuring PipeWire for audio and MIDI...${NC}"
+    pw-cli info || handle_error "PipeWire is not running or not configured properly"
+    pw-cli load-module module-alsa-source || handle_error "Failed to load module-alsa-source"
+    pw-cli load-module module-alsa-sink || handle_error "Failed to load module-alsa-sink"
+    pw-cli load-module module-jack-source || handle_error "Failed to load module-jack-source"
+    pw-cli load-module module-jack-sink || handle_error "Failed to load module-jack-sink"
+    echo -e "${GREEN}PipeWire audio and MIDI configuration complete.${NC}"
+}
+
 main() {
     check_dependencies
     if ! verify_pipewire; then
@@ -107,6 +117,7 @@ main() {
     setup_midi_devices
     setup_recording_choices
     install_virtual_audio_cable
+    configure_pipewire_audio_midi
     
     echo -e "\n${GREEN}Audio setup completed successfully!${NC}"
     echo -e "Next steps:"
