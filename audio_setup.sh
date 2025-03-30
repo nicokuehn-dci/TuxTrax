@@ -7,7 +7,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-REQUIRED_PACKAGES="ffmpeg pulseaudio libasound2-dev pipewire pipewire-alsa libpipewire-0.3-dev"
+REQUIRED_PACKAGES="ffmpeg pulseaudio libasound2-dev pipewire pipewire-alsa libpipewire-0.3-dev portaudio19-dev libportaudio2 libportaudiocpp0"
 
 handle_error() {
     echo -e "${RED}Error: $1${NC}" >&2
