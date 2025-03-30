@@ -32,6 +32,13 @@ Mixer Section:
 
     Sidechain Compression: Duck channels via triggers (kick/bass ducking).
 
+Cloud Sync:
+
+    TuxTrax uses folder synchronization for cloud sync.
+
+    Supported services: Google Drive, Dropbox, Splice, Noiiz.
+
+    File conflicts are resolved by keeping the most recently modified version.
 
 Pro Features:
 
@@ -103,8 +110,6 @@ Unique Selling Points
 
     Ubuntu-First: Optimized for Linux audio workflows.
 
-
-
 Tech Stack
 
 Python Libraries
@@ -126,5 +131,3 @@ Performance Hacks
     C Extensions: cython/numba for DSP.
 
     Multicore: ray/multiprocessing.
-
-

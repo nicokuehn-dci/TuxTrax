@@ -47,7 +47,7 @@
 ### Sample Library Integration: Dive Into Your Sound Collection
 
 *   **Deep Library Scanning:** Automatically index your Splice, Loopmasters, or other sample folders.
-*   **Cloud Sync:** Access your samples from anywhere by linking TuxTrax to your cloud storage provider (Splice, Noiiz, Google Drive, Dropbox).
+*   **Cloud Sync:** TuxTrax can synchronize your sample library with cloud storage. Currently, it supports folder synchronization with Google Drive, Dropbox, Splice, and Noiiz. Direct API integration is planned for future releases. File conflicts are resolved by keeping the most recently modified version.
 *   **Auto-Fill Channels:** Spark inspiration with:
     *   **Style-Based Channel Population:** Quickly create complete kits based on genre (e.g., "Hip-Hop Kit").
     *   **"Surprise Me" Randomization:** Embrace the unexpected and discover new sounds.
