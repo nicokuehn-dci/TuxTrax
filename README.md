@@ -13,7 +13,7 @@
 
 *   **Sampler Section:** Effortlessly import, slice, and manipulate samples with MIDI mapping for full expressive control.
 *   **Mixer Section:** Craft polished mixes with analog-style channel strips, a pro-grade effects rack, and dynamic sidechain compression.
-*   **Ubuntu-First Focus:** Experience exceptional low-latency performance thanks to our JACK Audio integration.
+*   **Ubuntu-First Focus:** Experience exceptional low-latency performance thanks to our PipeWire integration.
 
 ## Feature Highlights: From Ice Floe to Stage
 
@@ -98,7 +98,7 @@ TuxTrax is built on a foundation of powerful, open-source technologies:
     *   **Cloud:** `boto3`, `firebase-admin`, `websockets`
     *   **MIDI/CV:** `mido`, `python-rtmidi`, `python-osc`
 *   **Performance Optimizations:**
-    *   **Real-Time Audio:** JACK Audio (`jackd`)
+    *   **Real-Time Audio:** PipeWire
     *   **C Extensions:** `cython`/`numba` for blazing-fast DSP.
     *   **Multicore Processing:** Harness the power of modern CPUs with `ray`/`multiprocessing`.
 
@@ -194,7 +194,7 @@ git clone https://github.com/nicokuehn-dci/TuxTrax.git
 cd TuxTrax
 
 # Install system dependencies
-sudo apt-get install -y python3-tk ffmpeg jackd2 libportaudio2
+sudo apt-get install -y python3-tk ffmpeg pipewire libportaudio2
 
 # Create virtual environment
 python3 -m venv daw_env
@@ -203,7 +203,7 @@ source daw_env/bin/activate
 # Install Python packages
 pip install -r requirements.txt
 
-# Configure JACK audio (reboot after)
+# Configure PipeWire audio (reboot after)
 sudo usermod -a -G audio $USER
 echo "@audio - rtprio 99" | sudo tee -a /etc/security/limits.conf
 
@@ -227,7 +227,7 @@ We welcome contributions from the open-source community! Whether you're a season
 
 ## Detailed Setup Guide
 
-For detailed installation and configuration instructions, please refer to the [Setup Guide](docs/SETUP.md). This guide includes step-by-step instructions for installing TuxTrax on Ubuntu, including system dependencies, virtual environment setup, and configuring JACK audio.
+For detailed installation and configuration instructions, please refer to the [Setup Guide](docs/SETUP.md). This guide includes step-by-step instructions for installing TuxTrax on Ubuntu, including system dependencies, virtual environment setup, and configuring PipeWire audio.
 
 ## New Features
 

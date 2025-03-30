@@ -10,7 +10,6 @@ from pathlib import Path
 
 # Configuration
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
-MIN_JACK_VERSION = (1, 9, 21)
 REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pulseaudio', 'aconnect', 'amidi', 'arecord']
 
 # Set up logging
@@ -41,7 +40,6 @@ def check_pipewire_version():
     version = tuple(map(int, version_str.split('.')))
     return version >= (0, 3, 50)
 
-
 def check_system_deps():
     missing = []
     for bin in REQUIRED_BINARIES:
@@ -49,21 +47,12 @@ def check_system_deps():
             missing.append(bin)
     return missing
 
-def setup_jack_config():
-    jackdrc = Path.home() / '.jackdrc'
-    if not jackdrc.exists():
-        with open(jackdrc, 'w') as f:
-            f.write("jackd -d alsa -r 48000 -p 256 -n 2")
-        logger.info("Created default JACK configuration at ~/.jackdrc")
-
-def configure_pulse_jack():
+def configure_pipewire():
     try:
-        subprocess.run(['pactl', 'load-module', 'module-jack-sink'], check=True)
-        subprocess.run(['pactl', 'load-module', 'module-jack-source'], check=True)
-        subprocess.run(['pacmd', 'set-default-sink', 'jack_out'], check=True)
-        logger.info("PulseAudio configured to work with JACK.")
+        subprocess.run(['pw-cli', 'info'], check=True)
+        logger.info("PipeWire is configured and running.")
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error configuring PulseAudio with JACK: {e}")
+        logger.error(f"Error configuring PipeWire: {e}")
         raise
 
 def setup_midi_devices():
@@ -121,11 +110,11 @@ def system_check():
     if not check_audio_group():
         issues.append("User not in 'audio' group - run:\n  sudo usermod -a -G audio $USER && reboot")
     
-    if not check_jack_version():
-        issues.append(f"JACK2 >= {'.'.join(map(str, MIN_JACK_VERSION))} required")
+    if not check_pipewire_version():
+        issues.append(f"PipeWire >= 0.3.50 required")
     
     if missing := check_system_deps():
-        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install jackd2 ffmpeg pulseaudio aconnect amidi arecord")
+        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install pipewire ffmpeg pulseaudio aconnect amidi arecord")
     
     if issues:
         logger.error("\n❌ System configuration issues:")
@@ -155,8 +144,7 @@ def main():
 
     # Perform configurations after successful system checks
     try:
-        setup_jack_config()
-        configure_pulse_jack()
+        configure_pipewire()
         setup_midi_devices()
         setup_recording_choices()
         setup_multitrack_recording()
@@ -173,4 +161,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         logger.info("\n🛑 Operation cancelled")
-

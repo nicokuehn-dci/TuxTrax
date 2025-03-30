@@ -7,9 +7,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-MIN_JACK_VERSION=1.9.21
-KX_STUDIO_REPO="https://launchpad.net/~kxstudio-debian/+archive/kxstudio"
-REQUIRED_PACKAGES="ffmpeg pulseaudio libasound2-dev"
+REQUIRED_PACKAGES="ffmpeg pulseaudio libasound2-dev pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse"
 
 handle_error() {
     echo -e "${RED}Error: $1${NC}" >&2
@@ -20,10 +18,6 @@ handle_error() {
 check_dependencies() {
     echo -e "${YELLOW}Checking system dependencies...${NC}"
     command -v apt-get >/dev/null 2>&1 || handle_error "This script requires apt-get package manager"
-}
-
-version_ge() { 
-    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
 }
 
 verify_pipewire() {
@@ -68,16 +62,6 @@ install_tools() {
 post_install_check() {
     echo -e "${YELLOW}Running post-install checks...${NC}"
     
-    timeout 5 jackd -d dummy &>/dev/null &
-    JACK_PID=$!
-    sleep 1
-    if kill -0 "$JACK_PID" 2>/dev/null; then
-        echo -e "${GREEN}JACK server verified${NC}"
-        kill "$JACK_PID"
-    else
-        handle_error "JACK server failed to start"
-    fi
-    
     echo -e "${YELLOW}Configuring PulseAudio bridge...${NC}"
     pactl load-module module-jack-sink >/dev/null || handle_error "Failed to load JACK sink"
     pactl load-module module-jack-source >/dev/null || handle_error "Failed to load JACK source"
@@ -114,8 +98,8 @@ install_virtual_audio_cable() {
 
 main() {
     check_dependencies
-    if ! verify_jack; then
-        install_jack
+    if ! verify_pipewire; then
+        install_pipewire
     fi
     configure_permissions
     install_tools

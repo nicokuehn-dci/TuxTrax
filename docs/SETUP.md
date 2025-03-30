@@ -1,6 +1,6 @@
 # TuxTrax Setup Guide
 
-This guide provides step-by-step instructions for installing TuxTrax on Ubuntu, including system dependencies, virtual environment setup, and configuring JACK audio.
+This guide provides step-by-step instructions for installing TuxTrax on Ubuntu, including system dependencies, virtual environment setup, and configuring PipeWire audio.
 
 ## System Dependencies
 
@@ -9,7 +9,6 @@ Before installing TuxTrax, ensure that your system has the necessary dependencie
 ```bash
 sudo apt-get update
 sudo apt-get install -y python3 python3-venv python3-dev build-essential pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse qtbase5-dev libasound2-dev portaudio19-dev libportaudio2 libportaudiocpp0 ffmpeg git curl
-
 ```
 
 ## Virtual Environment Setup
@@ -37,14 +36,14 @@ To keep your Python environment clean and organized, it's recommended to use a v
     pip install -r requirements.txt
     ```
 
-## Configuring JACK Audio
+## Configuring PipeWire Audio
 
-TuxTrax uses JACK Audio for low-latency audio processing. Follow these steps to configure JACK on your system:
+TuxTrax uses PipeWire for low-latency audio processing. Follow these steps to configure PipeWire on your system:
 
-1. Install JACK and related packages:
+1. Install PipeWire and related packages:
 
     ```bash
-    sudo apt-get install -y jackd2 pulseaudio-module-jack
+    sudo apt-get install -y pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse
     ```
 
 2. Add your user to the `audio` group to allow real-time audio processing:
@@ -64,25 +63,6 @@ TuxTrax uses JACK Audio for low-latency audio processing. Follow these steps to 
 
     ```bash
     sudo reboot
-    ```
-
-5. After rebooting, start the JACK server using `qjackctl` or `cadence`:
-
-    ```bash
-    qjackctl
-    ```
-
-    or
-
-    ```bash
-    cadence
-    ```
-
-6. Configure PulseAudio to use JACK by running the following commands:
-
-    ```bash
-    pactl load-module module-jack-sink
-    pactl load-module module-jack-source
     ```
 
 ## Configuring MIDI Devices

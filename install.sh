@@ -14,16 +14,16 @@ sudo apt update && sudo apt upgrade -y
 
 echo "📦 Installing required packages..."
 sudo apt install -y python$PYTHON_VERSION python$PYTHON_VERSION-venv python$PYTHON_VERSION-dev \
-                     build-essential libjack-jackd2-dev jackd2 qtbase5-dev \
-                     libasound2-dev portaudio19-dev libportaudio2 libportaudiocpp0 \
-                     ffmpeg git curl
+                     build-essential pipewire pipewire-audio-client-libraries libspa-0.2-jack \
+                     pipewire-pulse qtbase5-dev libasound2-dev portaudio19-dev libportaudio2 \
+                     libportaudiocpp0 ffmpeg git curl
 
-# Set up JACK audio permissions
-echo "🔊 Configuring JACK for real-time performance..."
+# Set up PipeWire audio permissions
+echo "🔊 Configuring PipeWire for real-time performance..."
 if ! grep -q "@audio - rtprio 95" /etc/security/limits.conf; then
     echo "@audio - rtprio 95" | sudo tee -a /etc/security/limits.conf
     echo "@audio - memlock unlimited" | sudo tee -a /etc/security/limits.conf
-    echo "⚠️ Please log out and log back in to apply JACK audio group settings."
+    echo "⚠️ Please log out and log back in to apply PipeWire audio group settings."
 fi
 
 # Clone repo
@@ -67,12 +67,6 @@ pip install -r requirements.txt
 
 sudo apt install -y pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse
 # PipeWire automatically handles sink/source routing; no need for manual pactl commands.
-
-
-# Configure PulseAudio bridge
-echo "🔧 Configuring PulseAudio bridge..."
-pactl load-module module-jack-sink
-pactl load-module module-jack-source
 
 echo "✅ Installation complete!"
 echo ""

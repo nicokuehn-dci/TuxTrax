@@ -6,7 +6,7 @@
 sudo apt-get install cadence carla pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse
 
 # Minimal setup
-sudo apt-get install jackd2 pulseaudio-module-jack
+sudo apt-get install pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse
 ```
 
 ## 2. Configuring MIDI Devices
