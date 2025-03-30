@@ -18,7 +18,7 @@ class AudioEngine:
         
         self.stream = pw.Stream(self.core, "TuxTrax-Audio", None)
         self.stream.add_listener(self._stream_listener)
-        self.stream.connect(pw.DIRECTION_INPUT, pw.ID_ANY, pw.STREAM_FLAG_AUTOCONNECT, None, 0)
+        self.stream.connect(pw.DIRECTION_INPUT, pw.ID_ANY, pw.STREAM_FLAG_AUTOCONNECT | pw.STREAM_FLAG_RT_PROCESS, None, 0)
 
     def _stream_listener(self, stream, buffer):
         with self.lock:

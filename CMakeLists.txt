@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 find_package(PipeWire REQUIRED)
 find_package(ALSA REQUIRED)
+find_package(LV2 REQUIRED)
 
 add_executable(TuxTrax main.cpp)
 
-target_link_libraries(TuxTrax PRIVATE PipeWire::PipeWire ALSA::ALSA)
+target_link_libraries(TuxTrax PRIVATE PipeWire::PipeWire ALSA::ALSA LV2::lv2)

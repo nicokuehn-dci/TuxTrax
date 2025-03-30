@@ -39,8 +39,8 @@ class MidiManager:
         self.alsa_midi_in = None
         self.alsa_midi_out = None
         try:
-            self.alsa_midi_in = am.Input("hw:1", am.NONBLOCK)
-            self.alsa_midi_out = am.Output("hw:1", am.NONBLOCK)
+            self.alsa_midi_in = am.Input("hw:1,0", am.SND_RAWMIDI_NONBLOCK)
+            self.alsa_midi_out = am.Output("hw:1,0", am.SND_RAWMIDI_NONBLOCK)
         except Exception as e:
             print(f"ALSA MIDI initialization failed: {e}")
 

@@ -28,5 +28,6 @@ MIDI_SETUP_PROTOCOLS = {
     'recording_choices': {
         'list_recording_devices': 'arecord -l',
         'set_recording_format_bitrate': 'arecord -D plughw:<card_number>,<device_number> -f <format> -r <bitrate> -d <duration> <output_file>'
-    }
+    },
+    'list_all_midi_devices': 'aconnect -l'
 }
