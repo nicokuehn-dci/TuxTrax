@@ -50,3 +50,21 @@ class MidiManager:
     def stop(self):
         self.worker.running = False
         self.thread.quit()
+
+    def setup_virtual_midi_patchbay(self):
+        try:
+            subprocess.run(['pw-link', 'TuxTrax:MIDI Out', 'fluidsynth:MIDI In'], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error setting up virtual MIDI patchbay: {e}")
+
+    def monitor_latency(self):
+        try:
+            subprocess.run(['pw-top'], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error monitoring latency: {e}")
+
+    def test_latency(self):
+        try:
+            subprocess.run(['audacity', '--pipewire-latency-test'], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error testing latency: {e}")

@@ -36,3 +36,16 @@ class AudioEngine:
 
     def stop(self):
         self.stream.stop()
+
+    def set_latency(self, latency_ms):
+        """Set the desired latency for the audio engine."""
+        self.stream.set_latency(latency_ms)
+
+    def get_latency(self):
+        """Get the current latency of the audio engine."""
+        return self.stream.get_latency()
+
+    def monitor_latency(self):
+        """Monitor the latency of the audio engine."""
+        latency = self.get_latency()
+        print(f"Current latency: {latency} ms")

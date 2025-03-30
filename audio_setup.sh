@@ -106,6 +106,48 @@ configure_pipewire_audio_midi() {
     echo -e "${GREEN}PipeWire audio and MIDI configuration complete.${NC}"
 }
 
+configure_pipewire_tweaks() {
+    echo -e "${YELLOW}Applying PipeWire configuration tweaks for low-latency audio...${NC}"
+    sudo tee -a /etc/pipewire/pipewire.conf <<-EOF || handle_error "Failed to configure PipeWire"
+# Set quantum (buffer size) for pro-audio use
+default.clock.quantum = 64  # For low-latency (adjust based on your hardware)
+default.clock.min-quantum = 32
+default.clock.max-quantum = 1024
+
+# Prioritize real-time scheduling
+context.properties = {
+    default.clock.rate = 48000
+    default.clock.allowed-rates = [ 44100 48000 96000 ]
+    log.level = 2  # Debug logs if needed
+}
+EOF
+}
+
+configure_persistent_device_routing() {
+    echo -e "${YELLOW}Creating persistent device routing rules for PipeWire...${NC}"
+    sudo mkdir -p /etc/pipewire/pipewire-pulse.conf.d/
+    sudo tee /etc/pipewire/pipewire-pulse.conf.d/custom-rules.conf <<-EOF || handle_error "Failed to create persistent device routing rules"
+# Remember device connections
+context.properties = {
+    default.clock.rate = 48000
+    default.clock.allowed-rates = [ 44100 48000 96000 ]
+    log.level = 2  # Debug logs if needed
+}
+EOF
+}
+
+apply_system_tweaks() {
+    echo -e "${YELLOW}Applying system tweaks for RTKit priority and USB audio optimization...${NC}"
+    sudo systemctl edit rtkit-daemon.service <<-EOF || handle_error "Failed to configure RTKit priority"
+[Service]
+LimitRTPRIO=33
+LimitMEMLOCK=64M
+EOF
+
+    echo 'options snd-usb-audio nrpacks=1' | sudo tee /etc/modprobe.d/audio.conf || handle_error "Failed to configure USB audio optimization"
+    sudo apt-get install -y linux-lowlatency || handle_error "Failed to install low-latency kernel"
+}
+
 main() {
     check_dependencies
     if ! verify_pipewire; then
@@ -118,6 +160,9 @@ main() {
     setup_recording_choices
     install_virtual_audio_cable
     configure_pipewire_audio_midi
+    configure_pipewire_tweaks
+    configure_persistent_device_routing
+    apply_system_tweaks
     
     echo -e "\n${GREEN}Audio setup completed successfully!${NC}"
     echo -e "Next steps:"

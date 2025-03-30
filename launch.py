@@ -82,6 +82,12 @@ def setup_midi_devices():
         logger.info("🔧 Setting up MIDI devices...")
         subprocess.run(['aconnect', '-i', '-o'], check=True)
         subprocess.run(['amidi', '-l'], check=True)
+        
+        # Fallback script for ALSA MIDI
+        if not subprocess.run(['pw-cli', 'list-objects'], capture_output=True, text=True).stdout.find('Midi') != -1:
+            logger.info("Falling back to ALSA MIDI...")
+            subprocess.run(['aconnect', '-l'], check=True)
+            subprocess.run(['aconnect', 'MPK Mini 3', 'TuxTrax'], check=True)
     except subprocess.CalledProcessError as e:
         logger.error(f"Error setting up MIDI devices: {e}")
         raise
