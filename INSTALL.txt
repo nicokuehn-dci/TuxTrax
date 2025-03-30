@@ -1,0 +1,5 @@
+# PipeWire Real-Time Priority (automatic with RTKit):
+# No manual config needed on modern Linux systems.
+
+## Audio glitches? Check PipeWire latency:
+pw-top  # Look for xruns; adjust quantum in /etc/pipewire/pipewire.conf

@@ -1,0 +1,2 @@
+[ ] Implement PipeWire metadata for DAW integration
+[ ] Add MIDI device hotplug via libudev

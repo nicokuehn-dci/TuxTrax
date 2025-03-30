@@ -7,7 +7,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-REQUIRED_PACKAGES="ffmpeg pulseaudio libasound2-dev pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse"
+REQUIRED_PACKAGES="ffmpeg pulseaudio libasound2-dev pipewire pipewire-alsa libpipewire-0.3-dev"
 
 handle_error() {
     echo -e "${RED}Error: $1${NC}" >&2
@@ -27,7 +27,7 @@ verify_pipewire() {
 }
 
 install_pipewire() {
-    sudo apt-get install -y pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse || handle_error "Failed to install PipeWire packages"
+    sudo apt-get install -y pipewire pipewire-alsa libpipewire-0.3-dev || handle_error "Failed to install PipeWire packages"
 }
 
 configure_permissions() {
@@ -101,8 +101,6 @@ configure_pipewire_audio_midi() {
     pw-cli info || handle_error "PipeWire is not running or not configured properly"
     pw-cli load-module module-alsa-source || handle_error "Failed to load module-alsa-source"
     pw-cli load-module module-alsa-sink || handle_error "Failed to load module-alsa-sink"
-    pw-cli load-module module-jack-source || handle_error "Failed to load module-jack-source"
-    pw-cli load-module module-jack-sink || handle_error "Failed to load module-jack-sink"
     echo -e "${GREEN}PipeWire audio and MIDI configuration complete.${NC}"
 }
 
