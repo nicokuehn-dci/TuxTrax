@@ -132,6 +132,18 @@ Encounter a bug? Have a feature request? Let us know by opening an issue on GitH
 *   [ ] **Improve Cloud Collaboration Features:** Make real-time jamming even more seamless.
 *   [ ] **Native Plugin Support**: Host VST/AU plugins within TuxTrax.
 
+## Experimental Features Development Lifecycle
+
+To provide clarity on the development status of experimental features, we have implemented a development lifecycle with the following stages:
+
+* **Alpha:** Initial implementation, may have significant bugs and incomplete functionality.
+* **Beta:** Feature is more stable but may still have some issues and missing features.
+* **Stable:** Feature is considered complete and stable for general use.
+
+### Experimental Features Status
+
+* **Style Transfer (Beta):** Currently supports basic style transfer between a limited set of genres. Known limitations: May produce artifacts in some cases. Expected to reach stable in Q4 2024.
+
 ## Show Your Support: Give a Penguin a Fish
 
 If you find TuxTrax useful, please give this project a ⭐ to show your support! And don't forget to share your creations with the world!
