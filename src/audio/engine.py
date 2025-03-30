@@ -2,6 +2,7 @@ import sounddevice as sd
 import numpy as np
 from threading import Lock
 from pedalboard import Pedalboard
+import pipewire as pw
 
 class AudioEngine:
     def __init__(self, sr=48000, buffer_size=512):
@@ -11,17 +12,18 @@ class AudioEngine:
         self.lock = Lock()
         self.fx_rack = Pedalboard()
         
-        self.stream = sd.OutputStream(
-            samplerate=sr,
-            blocksize=buffer_size,
-            callback=self._callback,
-            dtype='float32'
-        )
+        pw.init(None, None)
+        self.context = pw.Context()
+        self.core = self.context.connect()
+        
+        self.stream = pw.Stream(self.core, "TuxTrax-Audio", None)
+        self.stream.add_listener(self._stream_listener)
+        self.stream.connect(pw.DIRECTION_INPUT, pw.ID_ANY, pw.STREAM_FLAG_AUTOCONNECT, None, 0)
 
-    def _callback(self, outdata, frames, time, status):
+    def _stream_listener(self, stream, buffer):
         with self.lock:
             processed = self.fx_rack.process(self.mix_buffer, self.sr)
-            outdata[:] = processed
+            buffer[:] = processed
             self.mix_buffer.fill(0)
 
     def add_audio(self, audio):

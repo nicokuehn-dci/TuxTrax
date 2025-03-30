@@ -23,7 +23,9 @@ setup(
         'soundfile>=0.12',
         'pytest>=7.4.4',
         'setuptools>=69.2.0',
-        'pyyaml>=6.0.1'
+        'pyyaml>=6.0.1',
+        'pipewire>=0.3.50',
+        'alsa>=1.2.4'
     ],
     entry_points={
         'console_scripts': [

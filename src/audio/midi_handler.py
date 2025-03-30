@@ -1,5 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
 import mido
+import pipewire as pw
+import alsa_midi as am
 
 class MidiWorker(QObject):
     note_on = pyqtSignal(int, float)  # (note, velocity 0.0-1.0)
@@ -25,7 +27,23 @@ class MidiManager:
         self.worker = MidiWorker()
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
-    
+        
+        # Initialize PipeWire MIDI
+        pw.init(None, None)
+        self.context = pw.Context()
+        self.core = self.context.connect()
+        self.midi_stream = pw.MidiStream(self.core, "TuxTrax-MIDI", pw.MIDI_DIRECTION_INPUT | pw.MIDI_DIRECTION_OUTPUT, None)
+        self.midi_stream.connect(pw.ID_ANY, 0)
+        
+        # Initialize ALSA MIDI fallback
+        self.alsa_midi_in = None
+        self.alsa_midi_out = None
+        try:
+            self.alsa_midi_in = am.Input("hw:1", am.NONBLOCK)
+            self.alsa_midi_out = am.Output("hw:1", am.NONBLOCK)
+        except Exception as e:
+            print(f"ALSA MIDI initialization failed: {e}")
+
     def start(self):
         self.thread.start()
     
