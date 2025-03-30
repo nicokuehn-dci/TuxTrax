@@ -263,4 +263,86 @@ The MIDI auto quantize feature allows you to automatically align your MIDI notes
 
 The documentation has been updated to reflect these new features. Be sure to check out the [Quickstart Guide](docs/quickstart.md) for more information on how to use these new capabilities.
 
+## Project Purpose
 
+TuxTrax is designed to provide a powerful and versatile tool for live performance sampling and mixing, with a focus on the Ubuntu and Linux audio community. It aims to combine intuitive sampling, mixing, and performance features with cutting-edge AI-powered tools, enabling users to create captivating live soundscapes.
+
+## Setup Steps
+
+1. **Clone the repository:**
+
+    ```
+    git clone git@github.com:nicokuehn-dci/TuxTrax.git
+    cd TuxTrax
+    ```
+
+2. **Install system dependencies:**
+
+    ```
+    sudo apt-get install -y python3-tk ffmpeg pipewire libportaudio2
+    ```
+
+3. **Create a virtual environment:**
+
+    ```
+    python3 -m venv daw_env
+    source daw_env/bin/activate
+    ```
+
+4. **Install Python packages:**
+
+    ```
+    pip install -r requirements.txt
+    ```
+
+5. **Configure PipeWire audio (reboot after):**
+
+    ```
+    sudo usermod -a -G audio $USER
+    echo "@audio - rtprio 99" | sudo tee -a /etc/security/limits.conf
+    ```
+
+## Dependencies
+
+TuxTrax relies on the following dependencies:
+
+*   **Python Libraries:**
+    *   **Audio Engine:** `pedalboard`, `sounddevice`, `pydub`
+    *   **AI/ML:** `librosa`, `tensorflow-lite`
+    *   **GUI:** `PyQt5`, `DearPyGui`, `pyqtgraph`
+    *   **Cloud:** `boto3`, `firebase-admin`, `websockets`
+    *   **MIDI/CV:** `mido`, `python-rtmidi`, `python-osc`
+*   **System Dependencies:**
+    *   **PipeWire:** For real-time audio processing
+    *   **FFmpeg:** For audio and video processing
+    *   **PortAudio:** For cross-platform audio input/output
+
+## Examples and Screenshots
+
+### Example 1: Importing and Slicing Samples
+
+![Importing and Slicing Samples](docs/images/import_slicing_samples.png)
+
+### Example 2: Mixing with Analog-Style Channel Strips
+
+![Mixing with Analog-Style Channel Strips](docs/images/mixing_channel_strips.png)
+
+### Example 3: Using the Pro Effects Rack
+
+![Using the Pro Effects Rack](docs/images/pro_effects_rack.png)
+
+### Example 4: Live Looping
+
+![Live Looping](docs/images/live_looping.png)
+
+### Example 5: AI-Powered Sample Matching
+
+![AI-Powered Sample Matching](docs/images/ai_sample_matching.png)
+
+### Example 6: Spectrogram View
+
+![Spectrogram View](docs/images/spectrogram_view.png)
+
+### Example 7: Phase Correlation Meter
+
+![Phase Correlation Meter](docs/images/phase_correlation_meter.png)

@@ -1,6 +1,11 @@
 from PyQt5.QtCore import Qt
 import pyqtgraph as pg
 import numpy as np
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 class WaveformEditor(pg.PlotWidget):
     def __init__(self):
@@ -20,4 +25,7 @@ class WaveformEditor(pg.PlotWidget):
         self.addItem(self.loop_region)
 
     def load_audio(self, data):
-        self.waveform.setData(data)
+        try:
+            self.waveform.setData(data)
+        except Exception as e:
+            logger.error(f"Error loading audio data: {e}")

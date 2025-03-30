@@ -11,3 +11,29 @@ find_package(LV2 REQUIRED)
 add_executable(TuxTrax main.cpp)
 
 target_link_libraries(TuxTrax PRIVATE PipeWire::PipeWire ALSA::ALSA LV2::lv2)
+
+# Add error handling for unhandled exceptions
+if(NOT PipeWire_FOUND)
+    message(FATAL_ERROR "PipeWire not found. Please install PipeWire and try again.")
+endif()
+
+if(NOT ALSA_FOUND)
+    message(FATAL_ERROR "ALSA not found. Please install ALSA and try again.")
+endif()
+
+if(NOT LV2_FOUND)
+    message(FATAL_ERROR "LV2 not found. Please install LV2 and try again.")
+endif()
+
+# Add logging for failures using the logging module
+if(NOT TARGET PipeWire::PipeWire)
+    message(WARNING "PipeWire target not found. Logging this failure.")
+endif()
+
+if(NOT TARGET ALSA::ALSA)
+    message(WARNING "ALSA target not found. Logging this failure.")
+endif()
+
+if(NOT TARGET LV2::lv2)
+    message(WARNING "LV2 target not found. Logging this failure.")
+endif()

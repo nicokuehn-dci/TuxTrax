@@ -86,3 +86,82 @@ For USB interfaces (e.g., Focusrite):
 echo 'options snd-usb-audio nrpacks=1' | sudo tee /etc/modprobe.d/audio.conf
 sudo apt install linux-lowlatency  # If on Ubuntu
 ```
+
+## Detailed Setup Instructions
+
+### Step-by-Step Guide
+
+1. **Install Required Packages:**
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y cadence carla pipewire pipewire-audio-client-libraries libspa-0.2-jack pipewire-pulse
+   ```
+
+2. **Configure MIDI Devices:**
+   - List available MIDI devices:
+     ```bash
+     aconnect -i -o
+     amidi -l
+     ```
+   - Connect a MIDI input to a MIDI output:
+     ```bash
+     aconnect <input_id> <output_id>
+     ```
+
+3. **Configure Recording Choices:**
+   - List available recording devices:
+     ```bash
+     arecord -l
+     ```
+   - Set the recording format and bitrate:
+     ```bash
+     arecord -D plughw:<card_number>,<device_number> -f <format> -r <bitrate> -d <duration> <output_file>
+     ```
+
+4. **Apply PipeWire Configuration Tweaks:**
+   - Edit `/etc/pipewire/pipewire.conf` (or `~/.config/pipewire/pipewire.conf`):
+     ```ini
+     default.clock.quantum = 64
+     default.clock.min-quantum = 32
+     default.clock.max-quantum = 1024
+     context.properties = {
+         default.clock.rate = 48000
+         default.clock.allowed-rates = [ 44100 48000 96000 ]
+         log.level = 2
+     }
+     ```
+
+5. **Apply System Tweaks:**
+   - Ensure PipeWire has real-time privileges:
+     ```bash
+     sudo systemctl edit rtkit-daemon.service
+     ```
+     Add:
+     ```ini
+     [Service]
+     LimitRTPRIO=33
+     LimitMEMLOCK=64M
+     ```
+   - Optimize USB audio:
+     ```bash
+     echo 'options snd-usb-audio nrpacks=1' | sudo tee /etc/modprobe.d/audio.conf
+     sudo apt install linux-lowlatency
+     ```
+
+## Examples and Screenshots
+
+### Example 1: Configuring MIDI Devices
+
+![Configuring MIDI Devices](images/configuring_midi_devices.png)
+
+### Example 2: Setting Recording Format and Bitrate
+
+![Setting Recording Format and Bitrate](images/setting_recording_format_bitrate.png)
+
+### Example 3: Applying PipeWire Configuration Tweaks
+
+![Applying PipeWire Configuration Tweaks](images/applying_pipewire_tweaks.png)
+
+### Example 4: Applying System Tweaks
+
+![Applying System Tweaks](images/applying_system_tweaks.png)

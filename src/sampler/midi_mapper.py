@@ -2,6 +2,11 @@ import mido
 from mido import Message
 import threading
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 class MidiWorker(QObject):
     note_on = pyqtSignal(int, int)  # (note, velocity)
@@ -13,13 +18,16 @@ class MidiWorker(QObject):
 
     def run(self):
         self.running = True
-        with mido.open_input() as port:
-            while self.running:
-                for msg in port.iter_pending():
-                    if msg.type == 'note_on':
-                        self.note_on.emit(msg.note, msg.velocity/127)
-                    elif msg.type == 'control_change':
-                        self.cc_changed.emit(msg.control, msg.value/127)
+        try:
+            with mido.open_input() as port:
+                while self.running:
+                    for msg in port.iter_pending():
+                        if msg.type == 'note_on':
+                            self.note_on.emit(msg.note, msg.velocity/127)
+                        elif msg.type == 'control_change':
+                            self.cc_changed.emit(msg.control, msg.value/127)
+        except Exception as e:
+            logger.error(f"Error in MIDI worker run loop: {e}")
 
 class MidiMapper:
     def __init__(self):
@@ -43,8 +51,11 @@ class MidiMapper:
             
     def trigger_sample(self, note, velocity):
         if note in self.mapping:
-            # Add sample triggering logic
-            print(f"Triggering sample: {self.mapping[note]} with velocity {velocity}")
+            try:
+                # Add sample triggering logic
+                print(f"Triggering sample: {self.mapping[note]} with velocity {velocity}")
+            except Exception as e:
+                logger.error(f"Error triggering sample for note {note}: {e}")
 
     def auto_quantize_midi(self, midi_data, bpm):
         """Auto quantize MIDI data to the given BPM.

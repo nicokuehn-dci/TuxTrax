@@ -12,6 +12,11 @@ from mixer.channel_strip import ChannelStrip
 from src.sampler.midi_mapper import MidiMapper
 from pedalboard import Pedalboard
 from src.audio.engine import AudioEngine
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -25,7 +30,7 @@ class MainWindow(QMainWindow):
             self.audio_thread = Thread(target=self.audio_engine.start)
             self.audio_thread.start()
         except Exception as e:
-            print(f"Error initializing AudioEngine: {e}")
+            logger.error(f"Error initializing AudioEngine: {e}")
             sys.exit(1)
         
     def _setup_ui(self):
@@ -70,4 +75,8 @@ def main():
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        logger.error(f"Unhandled exception: {e}")
+        sys.exit(1)

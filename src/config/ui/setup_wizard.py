@@ -3,6 +3,11 @@ from .dialogs.device_config import AudioDeviceDialog
 from ..config.settings import AudioMIDISettings
 import subprocess
 import pyudev
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger(__name__)
 
 class SetupWizard(QWizard):
     def __init__(self):
@@ -41,7 +46,9 @@ class AudioRoutingPage(QWizardPage):
         try:
             subprocess.run(['helvum'], check=True)
         except subprocess.CalledProcessError as e:
-            print(f"Error launching Helvum: {e}")
+            logger.error(f"Error launching Helvum: {e}")
+        except Exception as e:
+            logger.error(f"Unhandled exception: {e}")
 
 class DeviceHotplugPage(QWizardPage):
     def __init__(self):
@@ -56,11 +63,17 @@ class DeviceHotplugPage(QWizardPage):
         self.setLayout(layout)
         
     def start_monitoring(self):
-        context = pyudev.Context()
-        monitor = pyudev.Monitor.from_netlink(context)
-        monitor.filter_by(subsystem='usb')
-        observer = pyudev.MonitorObserver(monitor, self.device_event)
-        observer.start()
+        try:
+            context = pyudev.Context()
+            monitor = pyudev.Monitor.from_netlink(context)
+            monitor.filter_by(subsystem='usb')
+            observer = pyudev.MonitorObserver(monitor, self.device_event)
+            observer.start()
+        except Exception as e:
+            logger.error(f"Unhandled exception: {e}")
         
     def device_event(self, action, device):
-        print(f"Device {action}: {device}")
+        try:
+            logger.info(f"Device {action}: {device}")
+        except Exception as e:
+            logger.error(f"Unhandled exception: {e}")

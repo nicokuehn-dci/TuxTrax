@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QSlider, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit
 from PyQt5.QtCore import Qt, pyqtSignal
+import logging
 
 class ChannelStrip(QWidget):
     volume_changed = pyqtSignal(float)  # 0.0-1.0
@@ -36,10 +37,19 @@ class ChannelStrip(QWidget):
         self.setLayout(layout)
 
     def _on_volume_changed(self, value):
-        self.volume_changed.emit(value / 100.0)
+        try:
+            self.volume_changed.emit(value / 100.0)
+        except Exception as e:
+            logging.error(f"Error in volume change: {e}")
 
     def _on_pan_changed(self, value):
-        self.pan_changed.emit(value / 50.0)
+        try:
+            self.pan_changed.emit(value / 50.0)
+        except Exception as e:
+            logging.error(f"Error in pan change: {e}")
         
     def _on_track_name_changed(self, name):
-        self.track_name_changed.emit(name)
+        try:
+            self.track_name_changed.emit(name)
+        except Exception as e:
+            logging.error(f"Error in track name change: {e}")

@@ -35,10 +35,14 @@ def check_audio_group():
         return False
 
 def check_pipewire_version():
-    output = subprocess.check_output(['pipewire', '--version'], stderr=subprocess.STDOUT)
-    version_str = output.decode().split()[1]
-    version = tuple(map(int, version_str.split('.')))
-    return version >= (0, 3, 50)
+    try:
+        output = subprocess.check_output(['pipewire', '--version'], stderr=subprocess.STDOUT)
+        version_str = output.decode().split()[1]
+        version = tuple(map(int, version_str.split('.')))
+        return version >= (0, 3, 50)
+    except Exception as e:
+        logger.error(f"Error checking PipeWire version: {e}")
+        return False
 
 def check_pipewire_configuration():
     try:

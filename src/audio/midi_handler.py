@@ -2,6 +2,11 @@ from PyQt5.QtCore import QObject, pyqtSignal, QThread
 import mido
 import pipewire as pw
 import alsa_midi as am
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 class MidiWorker(QObject):
     note_on = pyqtSignal(int, float)  # (note, velocity 0.0-1.0)
@@ -13,13 +18,16 @@ class MidiWorker(QObject):
 
     def run(self):
         self.running = True
-        with mido.open_input() as port:
-            while self.running:
-                for msg in port.iter_pending():
-                    if msg.type == 'note_on':
-                        self.note_on.emit(msg.note, msg.velocity/127)
-                    elif msg.type == 'control_change':
-                        self.control_change.emit(msg.control, msg.value/127)
+        try:
+            with mido.open_input() as port:
+                while self.running:
+                    for msg in port.iter_pending():
+                        if msg.type == 'note_on':
+                            self.note_on.emit(msg.note, msg.velocity/127)
+                        elif msg.type == 'control_change':
+                            self.control_change.emit(msg.control, msg.value/127)
+        except Exception as e:
+            logger.error(f"Error in MIDI worker run loop: {e}")
 
 class MidiManager:
     def __init__(self):
@@ -29,11 +37,14 @@ class MidiManager:
         self.thread.started.connect(self.worker.run)
         
         # Initialize PipeWire MIDI
-        pw.init(None, None)
-        self.context = pw.Context()
-        self.core = self.context.connect()
-        self.midi_stream = pw.MidiStream(self.core, "TuxTrax-MIDI", pw.MIDI_DIRECTION_INPUT | pw.MIDI_DIRECTION_OUTPUT, None)
-        self.midi_stream.connect(pw.ID_ANY, 0)
+        try:
+            pw.init(None, None)
+            self.context = pw.Context()
+            self.core = self.context.connect()
+            self.midi_stream = pw.MidiStream(self.core, "TuxTrax-MIDI", pw.MIDI_DIRECTION_INPUT | pw.MIDI_DIRECTION_OUTPUT, None)
+            self.midi_stream.connect(pw.ID_ANY, 0)
+        except Exception as e:
+            logger.error(f"Error initializing PipeWire MIDI: {e}")
         
         # Initialize ALSA MIDI fallback
         self.alsa_midi_in = None
@@ -42,7 +53,7 @@ class MidiManager:
             self.alsa_midi_in = am.Input("hw:1,0", am.SND_RAWMIDI_NONBLOCK)
             self.alsa_midi_out = am.Output("hw:1,0", am.SND_RAWMIDI_NONBLOCK)
         except Exception as e:
-            print(f"ALSA MIDI initialization failed: {e}")
+            logger.error(f"ALSA MIDI initialization failed: {e}")
 
     def start(self):
         self.thread.start()
@@ -55,16 +66,16 @@ class MidiManager:
         try:
             subprocess.run(['pw-link', 'TuxTrax:MIDI Out', 'fluidsynth:MIDI In'], check=True)
         except subprocess.CalledProcessError as e:
-            print(f"Error setting up virtual MIDI patchbay: {e}")
+            logger.error(f"Error setting up virtual MIDI patchbay: {e}")
 
     def monitor_latency(self):
         try:
             subprocess.run(['pw-top'], check=True)
         except subprocess.CalledProcessError as e:
-            print(f"Error monitoring latency: {e}")
+            logger.error(f"Error monitoring latency: {e}")
 
     def test_latency(self):
         try:
             subprocess.run(['audacity', '--pipewire-latency-test'], check=True)
         except subprocess.CalledProcessError as e:
-            print(f"Error testing latency: {e}")
+            logger.error(f"Error testing latency: {e}")

@@ -110,4 +110,34 @@ source daw_env/bin/activate
 python3 src/main.py
 ```
 
+## Examples and Screenshots
+
+### Example 1: Importing and Slicing Samples
+
+![Importing and Slicing Samples](docs/images/import_slicing_samples.png)
+
+### Example 2: Mixing with Analog-Style Channel Strips
+
+![Mixing with Analog-Style Channel Strips](docs/images/mixing_channel_strips.png)
+
+### Example 3: Using the Pro Effects Rack
+
+![Using the Pro Effects Rack](docs/images/pro_effects_rack.png)
+
+### Example 4: Live Looping
+
+![Live Looping](docs/images/live_looping.png)
+
+### Example 5: AI-Powered Sample Matching
+
+![AI-Powered Sample Matching](docs/images/ai_sample_matching.png)
+
+### Example 6: Spectrogram View
+
+![Spectrogram View](docs/images/spectrogram_view.png)
+
+### Example 7: Phase Correlation Meter
+
+![Phase Correlation Meter](docs/images/phase_correlation_meter.png)
+
 Enjoy making music with TuxTrax!

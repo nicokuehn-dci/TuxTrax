@@ -2,6 +2,11 @@ import numpy as np
 import librosa
 from .midi_mapper import MidiMapper
 from ..utils.audio_utils import load_audio_file
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 class SamplerEngine:
     """Core sampler engine handling audio loading and playback.
@@ -38,21 +43,25 @@ class SamplerEngine:
         Returns:
             bool: True if the sample was loaded successfully
         """
-        audio_data, sr = load_audio_file(file_path)
-        bpm = self._detect_bpm(audio_data, sr)
-        quantized_audio = self._quantize_to_bpm(audio_data, sr, bpm)
-        sample_data = {
-            'data': quantized_audio,
-            'sr': sr,
-            'length': len(quantized_audio),
-            'key': self._detect_key(quantized_audio, sr),
-            'bpm': bpm
-        }
-        if is_loop:
-            self.loops[name] = sample_data
-        else:
-            self.samples[name] = sample_data
-        return True
+        try:
+            audio_data, sr = load_audio_file(file_path)
+            bpm = self._detect_bpm(audio_data, sr)
+            quantized_audio = self._quantize_to_bpm(audio_data, sr, bpm)
+            sample_data = {
+                'data': quantized_audio,
+                'sr': sr,
+                'length': len(quantized_audio),
+                'key': self._detect_key(quantized_audio, sr),
+                'bpm': bpm
+            }
+            if is_loop:
+                self.loops[name] = sample_data
+            else:
+                self.samples[name] = sample_data
+            return True
+        except Exception as e:
+            logger.error(f"Error loading sample {name} from {file_path}: {e}")
+            return False
 
     def load_loop(self, file_path, name):
         """Load a loop into the sampler.
@@ -76,8 +85,12 @@ class SamplerEngine:
         Returns:
             str: Detected key of the audio sample
         """
-        chroma = librosa.feature.chroma_cqt(y=audio_data, sr=sr)
-        return librosa.core.key_to_notes(np.argmax(chroma.mean(axis=1)))[0]
+        try:
+            chroma = librosa.feature.chroma_cqt(y=audio_data, sr=sr)
+            return librosa.core.key_to_notes(np.argmax(chroma.mean(axis=1)))[0]
+        except Exception as e:
+            logger.error(f"Error detecting key: {e}")
+            return None
 
     def _detect_bpm(self, audio_data, sr):
         """Detect the BPM of the audio sample.
@@ -89,8 +102,12 @@ class SamplerEngine:
         Returns:
             float: Detected BPM of the audio sample
         """
-        tempo, _ = librosa.beat.beat_track(y=audio_data, sr=sr)
-        return tempo
+        try:
+            tempo, _ = librosa.beat.beat_track(y=audio_data, sr=sr)
+            return tempo
+        except Exception as e:
+            logger.error(f"Error detecting BPM: {e}")
+            return None
 
     def _quantize_to_bpm(self, audio_data, sr, bpm):
         """Quantize the audio sample to the given BPM.
@@ -103,8 +120,12 @@ class SamplerEngine:
         Returns:
             np.ndarray: Quantized audio data
         """
-        hop_length = int(60 / bpm * sr)
-        return librosa.effects.time_stretch(audio_data, hop_length)
+        try:
+            hop_length = int(60 / bpm * sr)
+            return librosa.effects.time_stretch(audio_data, hop_length)
+        except Exception as e:
+            logger.error(f"Error quantizing to BPM: {e}")
+            return audio_data
 
     def map_to_midi(self, sample_name, midi_note):
         """Map a sample to a MIDI note.
@@ -113,8 +134,11 @@ class SamplerEngine:
             sample_name (str): Name of the sample to map
             midi_note (int): MIDI note number to map the sample to
         """
-        if sample_name in self.samples:
-            self.midi_mapper.map_note_to_sample(midi_note, sample_name)
+        try:
+            if sample_name in self.samples:
+                self.midi_mapper.map_note_to_sample(midi_note, sample_name)
+        except Exception as e:
+            logger.error(f"Error mapping sample {sample_name} to MIDI note {midi_note}: {e}")
 
     def process_audio(self, sample_name, start, end, is_loop=False):
         """Process audio for playback.
@@ -128,37 +152,47 @@ class SamplerEngine:
         Returns:
             np.ndarray: Processed audio data
         """
-        if is_loop:
-            sample_dict = self.loops
-        else:
-            sample_dict = self.samples
+        try:
+            if is_loop:
+                sample_dict = self.loops
+            else:
+                sample_dict = self.samples
 
-        if sample_name not in sample_dict:
+            if sample_name not in sample_dict:
+                return np.array([])
+            
+            sample = sample_dict[sample_name]
+            audio_data = sample['data'][start:end]
+            
+            # Apply any additional processing here (e.g., effects, envelopes)
+            
+            return audio_data
+        except Exception as e:
+            logger.error(f"Error processing audio for sample {sample_name}: {e}")
             return np.array([])
-        
-        sample = sample_dict[sample_name]
-        audio_data = sample['data'][start:end]
-        
-        # Apply any additional processing here (e.g., effects, envelopes)
-        
-        return audio_data
 
     def _setup_multitrack(self):
-        for i in range(8):  # Example: 8 tracks
-            track = {
-                'name': f'Track {i+1}',
-                'audio_data': [],
-                'midi_data': []
-            }
-            self.tracks.append(track)
+        try:
+            for i in range(8):  # Example: 8 tracks
+                track = {
+                    'name': f'Track {i+1}',
+                    'audio_data': [],
+                    'midi_data': []
+                }
+                self.tracks.append(track)
+        except Exception as e:
+            logger.error(f"Error setting up multitrack: {e}")
 
     def _setup_automation_lanes(self):
-        for i in range(8):  # Example: 8 automation lanes
-            lane = {
-                'name': f'Automation Lane {i+1}',
-                'data': []
-            }
-            self.automation_lanes.append(lane)
+        try:
+            for i in range(8):  # Example: 8 automation lanes
+                lane = {
+                    'name': f'Automation Lane {i+1}',
+                    'data': []
+                }
+                self.automation_lanes.append(lane)
+        except Exception as e:
+            logger.error(f"Error setting up automation lanes: {e}")
 
     def add_audio_to_track(self, track_index, audio_data):
         """Add audio data to a specific track.
@@ -167,8 +201,11 @@ class SamplerEngine:
             track_index (int): Index of the track to add audio to
             audio_data (np.ndarray): Audio data to add
         """
-        if 0 <= track_index < len(self.tracks):
-            self.tracks[track_index]['audio_data'].append(audio_data)
+        try:
+            if 0 <= track_index < len(self.tracks):
+                self.tracks[track_index]['audio_data'].append(audio_data)
+        except Exception as e:
+            logger.error(f"Error adding audio to track {track_index}: {e}")
 
     def add_midi_to_track(self, track_index, midi_data):
         """Add MIDI data to a specific track.
@@ -177,8 +214,11 @@ class SamplerEngine:
             track_index (int): Index of the track to add MIDI to
             midi_data (list): MIDI data to add
         """
-        if 0 <= track_index < len(self.tracks):
-            self.tracks[track_index]['midi_data'].append(midi_data)
+        try:
+            if 0 <= track_index < len(self.tracks):
+                self.tracks[track_index]['midi_data'].append(midi_data)
+        except Exception as e:
+            logger.error(f"Error adding MIDI to track {track_index}: {e}")
 
     def add_automation_data(self, lane_index, automation_data):
         """Add automation data to a specific lane.
@@ -187,8 +227,11 @@ class SamplerEngine:
             lane_index (int): Index of the lane to add automation to
             automation_data (list): Automation data to add
         """
-        if 0 <= lane_index < len(self.automation_lanes):
-            self.automation_lanes[lane_index]['data'].append(automation_data)
+        try:
+            if 0 <= lane_index < len(self.automation_lanes):
+                self.automation_lanes[lane_index]['data'].append(automation_data)
+        except Exception as e:
+            logger.error(f"Error adding automation data to lane {lane_index}: {e}")
 
     def fetch_high_quality_output(self, sample_name):
         """Fetch high-quality output for a sample.
@@ -199,12 +242,16 @@ class SamplerEngine:
         Returns:
             np.ndarray: High-quality audio data
         """
-        if sample_name not in self.samples:
+        try:
+            if sample_name not in self.samples:
+                return np.array([])
+            
+            sample = self.samples[sample_name]
+            audio_data = sample['data']
+            
+            # Apply any additional processing here (e.g., effects, mastering)
+            
+            return audio_data
+        except Exception as e:
+            logger.error(f"Error fetching high-quality output for sample {sample_name}: {e}")
             return np.array([])
-        
-        sample = self.samples[sample_name]
-        audio_data = sample['data']
-        
-        # Apply any additional processing here (e.g., effects, mastering)
-        
-        return audio_data
