@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Configuration
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
-REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pipewire-pulse', 'aconnect', 'amidi', 'arecord']
+REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pipewire', 'aconnect', 'amidi', 'arecord']
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -86,12 +86,6 @@ def setup_midi_devices():
         logger.info("🔧 Setting up MIDI devices...")
         subprocess.run(['aconnect', '-i', '-o'], check=True)
         subprocess.run(['amidi', '-l'], check=True)
-        
-        # Fallback script for ALSA MIDI
-        if not subprocess.run(['pw-cli', 'list-objects'], capture_output=True, text=True).stdout.find('Midi') != -1:
-            logger.info("Falling back to ALSA MIDI...")
-            subprocess.run(['aconnect', '-l'], check=True)
-            subprocess.run(['aconnect', 'MPK Mini 3', 'TuxTrax'], check=True)
     except subprocess.CalledProcessError as e:
         logger.error(f"Error setting up MIDI devices: {e}")
         raise

@@ -76,3 +76,35 @@ def quantize_loop_to_bpm(audio_data, sr, bpm):
     except Exception as e:
         logger.error(f"Error quantizing loop to BPM {bpm}: {e}")
         return None
+
+def initialize_pipewire():
+    """Initialize PipeWire context and core"""
+    try:
+        pw.init(None, None)
+        context = pw.Context()
+        core = context.connect()
+        return context, core
+    except Exception as e:
+        logger.error(f"Error initializing PipeWire: {e}")
+        return None, None
+
+def create_pipewire_stream(core, name, direction, flags):
+    """Create and connect a PipeWire stream"""
+    try:
+        stream = pw.Stream(core, name, None)
+        stream.add_listener(lambda s, b: b)
+        stream.connect(direction, pw.ID_ANY, flags, None, 0)
+        return stream
+    except Exception as e:
+        logger.error(f"Error creating PipeWire stream: {e}")
+        return None
+
+def process_audio_with_pipewire(audio_data, sr, stream):
+    """Process audio data using PipeWire stream"""
+    try:
+        stream.write(audio_data.tobytes())
+        processed_data = stream.read(len(audio_data) * 2)
+        return np.frombuffer(processed_data, dtype=np.float32)
+    except Exception as e:
+        logger.error(f"Error processing audio with PipeWire: {e}")
+        return audio_data
