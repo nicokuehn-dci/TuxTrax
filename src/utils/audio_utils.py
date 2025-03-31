@@ -1,14 +1,21 @@
 import librosa
 from pydub import AudioSegment
 import logging
+import pipewire as pw
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 def load_audio_file(file_path):
-    """Load audio file using librosa"""
+    """Load audio file using PipeWire"""
     try:
+        pw.init(None, None)
+        context = pw.Context()
+        core = context.connect()
+        stream = pw.Stream(core, "TuxTrax-Audio", None)
+        stream.add_listener(lambda s, b: b)
+        stream.connect(pw.DIRECTION_INPUT, pw.ID_ANY, pw.STREAM_FLAG_AUTOCONNECT | pw.STREAM_FLAG_RT_PROCESS, None, 0)
         y, sr = librosa.load(file_path, sr=None, mono=True)
         return y, sr
     except Exception as e:

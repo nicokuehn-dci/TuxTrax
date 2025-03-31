@@ -1,7 +1,6 @@
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
 import mido
 import pipewire as pw
-import alsa_midi as am
 import logging
 
 # Set up logging
@@ -45,15 +44,6 @@ class MidiManager:
             self.midi_stream.connect(pw.ID_ANY, 0)
         except Exception as e:
             logger.error(f"Error initializing PipeWire MIDI: {e}")
-        
-        # Initialize ALSA MIDI fallback
-        self.alsa_midi_in = None
-        self.alsa_midi_out = None
-        try:
-            self.alsa_midi_in = am.Input("hw:1,0", am.SND_RAWMIDI_NONBLOCK)
-            self.alsa_midi_out = am.Output("hw:1,0", am.SND_RAWMIDI_NONBLOCK)
-        except Exception as e:
-            logger.error(f"ALSA MIDI initialization failed: {e}")
 
     def start(self):
         self.thread.start()

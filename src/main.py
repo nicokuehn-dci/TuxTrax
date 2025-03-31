@@ -13,6 +13,7 @@ from src.sampler.midi_mapper import MidiMapper
 from pedalboard import Pedalboard
 from src.audio.engine import AudioEngine
 import logging
+import pipewire as pw
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

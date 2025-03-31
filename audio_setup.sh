@@ -7,7 +7,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-REQUIRED_PACKAGES="ffmpeg pulseaudio libasound2-dev pipewire pipewire-alsa libpipewire-0.3-dev portaudio19-dev libportaudio2 libportaudiocpp0"
+REQUIRED_PACKAGES="ffmpeg libasound2-dev pipewire pipewire-alsa libpipewire-0.3-dev portaudio19-dev libportaudio2 libportaudiocpp0 pipewire-pulse"
 
 handle_error() {
     echo -e "${RED}Error: $1${NC}" >&2
@@ -63,8 +63,9 @@ post_install_check() {
     echo -e "${YELLOW}Running post-install checks...${NC}"
     
     echo -e "${YELLOW}Configuring PulseAudio bridge...${NC}"
-    pactl load-module module-jack-sink >/dev/null || handle_error "Failed to load JACK sink"
-    pactl load-module module-jack-source >/dev/null || handle_error "Failed to load JACK source"
+    pw-cli info || handle_error "PipeWire is not running or not configured properly"
+    pw-cli load-module module-alsa-source || handle_error "Failed to load module-alsa-source"
+    pw-cli load-module module-alsa-sink || handle_error "Failed to load module-alsa-sink"
 }
 
 setup_midi_devices() {
@@ -101,6 +102,8 @@ configure_pipewire_audio_midi() {
     pw-cli info || handle_error "PipeWire is not running or not configured properly"
     pw-cli load-module module-alsa-source || handle_error "Failed to load module-alsa-source"
     pw-cli load-module module-alsa-sink || handle_error "Failed to load module-alsa-sink"
+    pw-cli load-module module-jack-source || handle_error "Failed to load module-jack-source"
+    pw-cli load-module module-jack-sink || handle_error "Failed to load module-jack-sink"
     echo -e "${GREEN}PipeWire audio and MIDI configuration complete.${NC}"
 }
 

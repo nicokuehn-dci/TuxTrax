@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Configuration
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
-REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pulseaudio', 'aconnect', 'amidi', 'arecord']
+REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pipewire-pulse', 'aconnect', 'amidi', 'arecord']
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -149,7 +149,7 @@ def system_check():
         issues.append("PipeWire is not properly configured")
     
     if missing := check_system_deps():
-        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install pipewire ffmpeg pulseaudio aconnect amidi arecord")
+        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install pipewire ffmpeg pipewire-pulse aconnect amidi arecord")
     
     if issues:
         logger.error("\n❌ System configuration issues:")
