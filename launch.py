@@ -158,6 +158,29 @@ def parse_args():
     parser.add_argument("--debug", action="store_true", help="Enable debug output")
     return parser.parse_args()
 
+def setup_virtualenv():
+    try:
+        logger.info("🔧 Setting up virtual environment...")
+        if not os.path.exists("daw_env"):
+            subprocess.run([PYTHON_CMD, "-m", "venv", "daw_env"], check=True)
+        activate_script = "daw_env/bin/activate" if platform.system() != "Windows" else "daw_env\\Scripts\\activate"
+        activate_command = f"source {activate_script}" if platform.system() != "Windows" else activate_script
+        subprocess.run(activate_command, shell=True, check=True)
+        logger.info("Virtual environment activated.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error setting up virtual environment: {e}")
+        raise
+
+def install_dependencies():
+    try:
+        logger.info("📦 Installing Python dependencies...")
+        subprocess.run([PYTHON_CMD, "-m", "pip", "install", "--upgrade", "pip"], check=True)
+        subprocess.run([PYTHON_CMD, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
+        logger.info("Python dependencies installed.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error installing Python dependencies: {e}")
+        raise
+
 def main():
     args = parse_args()
     
@@ -173,6 +196,8 @@ def main():
 
     # Perform configurations after successful system checks
     try:
+        setup_virtualenv()
+        install_dependencies()
         configure_pipewire()
         configure_pipewire_audio_midi()
         setup_midi_devices()
