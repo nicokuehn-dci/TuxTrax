@@ -1,21 +1,14 @@
 import librosa
 from pydub import AudioSegment
 import logging
-import pipewire as pw
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 def load_audio_file(file_path):
-    """Load audio file using PipeWire"""
+    """Load audio file from the local file system"""
     try:
-        pw.init(None, None)
-        context = pw.Context()
-        core = context.connect()
-        stream = pw.Stream(core, "TuxTrax-Audio", None)
-        stream.add_listener(lambda s, b: b)
-        stream.connect(pw.DIRECTION_INPUT, pw.ID_ANY, pw.STREAM_FLAG_AUTOCONNECT | pw.STREAM_FLAG_RT_PROCESS, None, 0)
         y, sr = librosa.load(file_path, sr=None, mono=True)
         return y, sr
     except Exception as e:
@@ -76,35 +69,3 @@ def quantize_loop_to_bpm(audio_data, sr, bpm):
     except Exception as e:
         logger.error(f"Error quantizing loop to BPM {bpm}: {e}")
         return None
-
-def initialize_pipewire():
-    """Initialize PipeWire context and core"""
-    try:
-        pw.init(None, None)
-        context = pw.Context()
-        core = context.connect()
-        return context, core
-    except Exception as e:
-        logger.error(f"Error initializing PipeWire: {e}")
-        return None, None
-
-def create_pipewire_stream(core, name, direction, flags):
-    """Create and connect a PipeWire stream"""
-    try:
-        stream = pw.Stream(core, name, None)
-        stream.add_listener(lambda s, b: b)
-        stream.connect(direction, pw.ID_ANY, flags, None, 0)
-        return stream
-    except Exception as e:
-        logger.error(f"Error creating PipeWire stream: {e}")
-        return None
-
-def process_audio_with_pipewire(audio_data, sr, stream):
-    """Process audio data using PipeWire stream"""
-    try:
-        stream.write(audio_data.tobytes())
-        processed_data = stream.read(len(audio_data) * 2)
-        return np.frombuffer(processed_data, dtype=np.float32)
-    except Exception as e:
-        logger.error(f"Error processing audio with PipeWire: {e}")
-        return audio_data
