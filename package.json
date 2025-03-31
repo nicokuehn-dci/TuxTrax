@@ -1,0 +1,15 @@
+{
+  "name": "TuxTrax",
+  "version": "1.0.0",
+  "description": "A powerful, open-source live performance sampler and mixer.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "nicokuehn-dci",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^13.1.7"
+  },
+  "devDependencies": {}
+}

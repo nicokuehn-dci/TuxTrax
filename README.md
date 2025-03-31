@@ -14,6 +14,7 @@
 *   **Sampler Section:** Effortlessly import, slice, and manipulate samples with MIDI mapping for full expressive control.
 *   **Mixer Section:** Craft polished mixes with analog-style channel strips, a pro-grade effects rack, and dynamic sidechain compression.
 *   **Ubuntu-First Focus:** Experience exceptional low-latency performance thanks to our PipeWire integration.
+*   **Hybrid GUI:** Leverage the power of Electron for a modern, responsive user interface.
 
 ## Feature Highlights: From Ice Floe to Stage
 
@@ -94,7 +95,7 @@ TuxTrax is built on a foundation of powerful, open-source technologies:
 *   **Python Libraries:**
     *   **Audio Engine:** `pedalboard`, `sounddevice`, `pydub`
     *   **AI/ML:** `librosa`, `tensorflow-lite`
-    *   **GUI:** `PyQt5`, `DearPyGui`, `pyqtgraph`
+    *   **GUI:** `Electron`, `Node.js`
     *   **Cloud:** `boto3`, `firebase-admin`, `websockets`
     *   **MIDI/CV:** `mido`, `python-rtmidi`, `python-osc`
 *   **Performance Optimizations:**
@@ -309,7 +310,7 @@ TuxTrax relies on the following dependencies:
 *   **Python Libraries:**
     *   **Audio Engine:** `pedalboard`, `sounddevice`, `pydub`
     *   **AI/ML:** `librosa`, `tensorflow-lite`
-    *   **GUI:** `PyQt5`, `DearPyGui`, `pyqtgraph`
+    *   **GUI:** `Electron`, `Node.js`
     *   **Cloud:** `boto3`, `firebase-admin`, `websockets`
     *   **MIDI/CV:** `mido`, `python-rtmidi`, `python-osc`
 *   **System Dependencies:**
@@ -346,3 +347,26 @@ TuxTrax relies on the following dependencies:
 ### Example 7: Phase Correlation Meter
 
 ![Phase Correlation Meter](docs/images/phase_correlation_meter.png)
+
+## Hybrid Approach with Electron and Python
+
+TuxTrax leverages a hybrid approach, combining the power of Electron for the GUI and regular Python code for other functionalities. This allows us to create a modern, responsive user interface while maintaining the flexibility and performance of Python for audio processing, MIDI handling, and other core features.
+
+### Why Electron?
+
+* **Cross-Platform:** Electron allows us to build a single codebase that runs on multiple platforms, including Linux, Windows, and macOS.
+* **Modern UI:** With Electron, we can create a sleek, modern user interface using web technologies like HTML, CSS, and JavaScript.
+* **Community Support:** Electron has a large and active community, providing a wealth of resources, plugins, and tools to enhance development.
+
+### How It Works
+
+* **Electron for GUI:** The user interface is built using Electron, leveraging web technologies for a responsive and visually appealing experience.
+* **Python for Core Functionality:** Audio processing, MIDI handling, and other core functionalities are implemented in Python, ensuring high performance and flexibility.
+* **Communication:** Electron and Python communicate through a combination of IPC (Inter-Process Communication) and WebSockets, enabling seamless integration between the frontend and backend.
+
+### Benefits
+
+* **Separation of Concerns:** By separating the GUI and core functionalities, we can develop and maintain each component independently, improving code quality and maintainability.
+* **Performance:** Python's performance and extensive library support make it ideal for audio processing and other computationally intensive tasks.
+* **Flexibility:** The hybrid approach allows us to leverage the strengths of both Electron and Python, creating a powerful and versatile application.
+
