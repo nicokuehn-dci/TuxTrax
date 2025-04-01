@@ -19,6 +19,7 @@ class SamplerEngine:
         playback_mode (str): Mode of playback (e.g., "one-shot")
         tracks (list): List of tracks for multi-track recording
         automation_lanes (list): List of automation lanes for parameters
+        swing (dict): Stores swing settings for all channels and individual channels
     """
     
     def __init__(self):
@@ -29,6 +30,7 @@ class SamplerEngine:
         self.playback_mode = "one-shot"
         self.tracks = []
         self.automation_lanes = []
+        self.swing = {'global': 0.0, 'channels': {}}
         self._setup_multitrack()
         self._setup_automation_lanes()
 
@@ -164,12 +166,59 @@ class SamplerEngine:
             sample = sample_dict[sample_name]
             audio_data = sample['data'][start:end]
             
+            # Apply swing settings
+            swing_amount = self.swing['global']
+            if sample_name in self.swing['channels']:
+                swing_amount = self.swing['channels'][sample_name]
+            
+            if swing_amount > 0:
+                audio_data = self._apply_swing(audio_data, swing_amount)
+            
             # Apply any additional processing here (e.g., effects, envelopes)
             
             return audio_data
         except Exception as e:
             logger.error(f"Error processing audio for sample {sample_name}: {e}")
             return np.array([])
+
+    def _apply_swing(self, audio_data, swing_amount):
+        """Apply swing to the audio data.
+        
+        Args:
+            audio_data (np.ndarray): Audio data array
+            swing_amount (float): Amount of swing to apply (0.0-1.0)
+            
+        Returns:
+            np.ndarray: Audio data with swing applied
+        """
+        try:
+            hop_length = int(60 / self.current_bpm * self.samples[sample_name]['sr'])
+            swing_factor = 1.0 + swing_amount * 0.5
+            for i in range(1, len(audio_data), 2 * hop_length):
+                audio_data[i:i + hop_length] = librosa.effects.time_stretch(audio_data[i:i + hop_length], swing_factor)
+            return audio_data
+        except Exception as e:
+            logger.error(f"Error applying swing: {e}")
+            return audio_data
+
+    def set_swing(self, swing_amount, channel=None, style='newschool'):
+        """Set swing amount for all channels or a specific channel.
+        
+        Args:
+            swing_amount (float): Amount of swing to apply (0.0-1.0)
+            channel (str): Name of the channel to apply swing to (None for all channels)
+            style (str): Swing style ('oldschool' or 'newschool')
+        """
+        try:
+            if style == 'oldschool':
+                swing_amount *= 0.75  # Old-school Akai sampler swing factor
+            
+            if channel:
+                self.swing['channels'][channel] = swing_amount
+            else:
+                self.swing['global'] = swing_amount
+        except Exception as e:
+            logger.error(f"Error setting swing: {e}")
 
     def _setup_multitrack(self):
         try:

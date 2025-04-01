@@ -36,6 +36,7 @@ class MidiMapper:
         self.thread = QThread()
         self.worker.moveToThread(self.thread)
         self.worker.note_on.connect(self.trigger_sample)
+        self.swing_settings = {'global': 0.0, 'channels': {}}
         
     def map_note_to_sample(self, note, sample_path):
         self.mapping[note] = sample_path
@@ -77,3 +78,27 @@ class MidiMapper:
             else:
                 quantized_midi.append(msg)
         return quantized_midi
+
+    def apply_swing(self, midi_data, swing_amount, channel=None, style='newschool'):
+        """Apply swing to MIDI data.
+        
+        Args:
+            midi_data (list): List of MIDI messages
+            swing_amount (float): Amount of swing to apply (0.0-1.0)
+            channel (str): Name of the channel to apply swing to (None for all channels)
+            style (str): Swing style ('oldschool' or 'newschool')
+            
+        Returns:
+            list: MIDI messages with swing applied
+        """
+        try:
+            if style == 'oldschool':
+                swing_amount *= 0.75  # Old-school Akai sampler swing factor
+            
+            swing_factor = 1.0 + swing_amount * 0.5
+            for i in range(1, len(midi_data), 2):
+                midi_data[i].time *= swing_factor
+            return midi_data
+        except Exception as e:
+            logger.error(f"Error applying swing: {e}")
+            return midi_data

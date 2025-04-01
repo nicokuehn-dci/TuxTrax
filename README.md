@@ -27,6 +27,7 @@
     *   **ADSR Envelopes:** Sculpt the dynamics of your sounds.
     *   **Loop Modes:** Create evolving textures and soundscapes.
 *   **MIDI Mapping:** Assign samples to notes or pads for expressive play with drum pads and melodic instruments.
+*   **Swing Function:** Apply swing to all channels or individual channels, with options for old-school Akai sampler and new-school styles.
 
 ### Mixer Section: Sculpt Your Sonic Landscape
 
