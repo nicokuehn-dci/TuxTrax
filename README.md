@@ -371,3 +371,19 @@ TuxTrax leverages a hybrid approach, combining the power of Electron for the GUI
 * **Performance:** Python's performance and extensive library support make it ideal for audio processing and other computationally intensive tasks.
 * **Flexibility:** The hybrid approach allows us to leverage the strengths of both Electron and Python, creating a powerful and versatile application.
 
+### New Methods for Generating, Filtering, and Recombining MIDI Drum Patterns
+
+TuxTrax now includes new methods for generating, filtering, and recombining MIDI drum patterns using Python scripts. These methods are designed to enhance your creative workflow and provide more flexibility in creating unique drum patterns.
+
+#### Generating Original MIDI Drum Patterns
+
+You can generate original MIDI drum patterns using the `generate_drum_pattern` method. This method creates a 16-step pattern with kick, snare, and hi-hat components.
+
+#### Filtering Patterns into Categories
+
+The `filter_patterns` method allows you to filter patterns into categories, such as "hip-hop grooves" or "techno kicks". This helps you organize your patterns and quickly find the ones that fit your project.
+
+#### Recombining Elements Using Markov Chains
+
+The `recombine_patterns` method uses Markov chains to mix elements from your own library, creating new and unique drum patterns. This method provides endless possibilities for creative recombination of your existing patterns.
+

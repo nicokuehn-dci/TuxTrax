@@ -3,6 +3,7 @@ import librosa
 from .midi_mapper import MidiMapper
 from ..utils.audio_utils import load_audio_file
 import logging
+import random
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -19,6 +20,7 @@ class SamplerEngine:
         playback_mode (str): Mode of playback (e.g., "one-shot")
         tracks (list): List of tracks for multi-track recording
         automation_lanes (list): List of automation lanes for parameters
+        swing (dict): Stores swing settings for all channels and individual channels
     """
     
     def __init__(self):
@@ -29,6 +31,7 @@ class SamplerEngine:
         self.playback_mode = "one-shot"
         self.tracks = []
         self.automation_lanes = []
+        self.swing = {'global': 0.0, 'channels': {}}
         self._setup_multitrack()
         self._setup_automation_lanes()
 
@@ -164,12 +167,59 @@ class SamplerEngine:
             sample = sample_dict[sample_name]
             audio_data = sample['data'][start:end]
             
+            # Apply swing settings
+            swing_amount = self.swing['global']
+            if sample_name in self.swing['channels']:
+                swing_amount = self.swing['channels'][sample_name]
+            
+            if swing_amount > 0:
+                audio_data = self._apply_swing(audio_data, swing_amount)
+            
             # Apply any additional processing here (e.g., effects, envelopes)
             
             return audio_data
         except Exception as e:
             logger.error(f"Error processing audio for sample {sample_name}: {e}")
             return np.array([])
+
+    def _apply_swing(self, audio_data, swing_amount):
+        """Apply swing to the audio data.
+        
+        Args:
+            audio_data (np.ndarray): Audio data array
+            swing_amount (float): Amount of swing to apply (0.0-1.0)
+            
+        Returns:
+            np.ndarray: Audio data with swing applied
+        """
+        try:
+            hop_length = int(60 / self.current_bpm * self.samples[sample_name]['sr'])
+            swing_factor = 1.0 + swing_amount * 0.5
+            for i in range(1, len(audio_data), 2 * hop_length):
+                audio_data[i:i + hop_length] = librosa.effects.time_stretch(audio_data[i:i + hop_length], swing_factor)
+            return audio_data
+        except Exception as e:
+            logger.error(f"Error applying swing: {e}")
+            return audio_data
+
+    def set_swing(self, swing_amount, channel=None, style='newschool'):
+        """Set swing amount for all channels or a specific channel.
+        
+        Args:
+            swing_amount (float): Amount of swing to apply (0.0-1.0)
+            channel (str): Name of the channel to apply swing to (None for all channels)
+            style (str): Swing style ('oldschool' or 'newschool')
+        """
+        try:
+            if style == 'oldschool':
+                swing_amount *= 0.75  # Old-school Akai sampler swing factor
+            
+            if channel:
+                self.swing['channels'][channel] = swing_amount
+            else:
+                self.swing['global'] = swing_amount
+        except Exception as e:
+            logger.error(f"Error setting swing: {e}")
 
     def _setup_multitrack(self):
         try:
@@ -255,3 +305,42 @@ class SamplerEngine:
         except Exception as e:
             logger.error(f"Error fetching high-quality output for sample {sample_name}: {e}")
             return np.array([])
+
+    def generate_drum_pattern(self):
+        """Generate an original MIDI drum pattern."""
+        try:
+            pattern = []
+            for i in range(16):  # 16-step pattern
+                if i % 4 == 0:
+                    pattern.append(('kick', 36, 90))  # Kick on beats 1, 5, 9, 13
+                if i % 4 == 2:
+                    pattern.append(('snare', 38, 70))  # Snare on beats 3, 7, 11, 15
+                if i % 2 == 1:
+                    pattern.append(('hihat', 42, 50))  # Hi-hat on off-beats
+            return pattern
+        except Exception as e:
+            logger.error(f"Error generating drum pattern: {e}")
+            return []
+
+    def filter_patterns(self, patterns, category):
+        """Filter patterns into categories."""
+        try:
+            filtered_patterns = [p for p in patterns if p[0] == category]
+            return filtered_patterns
+        except Exception as e:
+            logger.error(f"Error filtering patterns: {e}")
+            return []
+
+    def recombine_patterns(self, patterns):
+        """Recombine elements from the library using Markov chains."""
+        try:
+            recombined_pattern = []
+            current_state = random.choice(patterns)
+            for _ in range(16):  # 16-step pattern
+                next_state = random.choice([p for p in patterns if p[0] == current_state[0]])
+                recombined_pattern.append(next_state)
+                current_state = next_state
+            return recombined_pattern
+        except Exception as e:
+            logger.error(f"Error recombining patterns: {e}")
+            return []
