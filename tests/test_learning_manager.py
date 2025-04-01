@@ -26,3 +26,18 @@ def test_update_model(learning_manager):
     learning_manager.update_model()
     assert 'user_inputs' in learning_manager.model
     assert 'user_outputs' in learning_manager.model
+
+def test_process_text_file(learning_manager, tmp_path):
+    # Create a test text file
+    text_file = tmp_path / "test.txt"
+    text_content = "This is a test text file."
+    with open(text_file, 'w') as f:
+        f.write(text_content)
+    
+    processed_text = learning_manager.process_text_file(str(text_file))
+    assert processed_text == text_content
+
+def test_learn_from_text(learning_manager):
+    text_content = "This is a test text for learning."
+    learning_manager.learn_from_text(text_content)
+    assert text_content in learning_manager.model['learned_texts']

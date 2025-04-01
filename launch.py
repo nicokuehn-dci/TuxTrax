@@ -216,6 +216,13 @@ def main():
         setup_multitrack_recording()
         configure_magenta_studio()
         
+        # Process text files for AI learning
+        text_files = ["path/to/textfile1.txt", "path/to/textfile2.pdf"]
+        for text_file in text_files:
+            text_content = learning_manager.process_text_file(text_file)
+            if text_content:
+                learning_manager.learn_from_text(text_content)
+        
         # Launch application after all configurations are complete
         launch_app()
         learning_manager.capture_user_output("TuxTrax launched")

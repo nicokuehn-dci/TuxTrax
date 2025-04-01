@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QWizard, QWizardPage, QVBoxLayout, QPushButton, QComboBox, QLabel
+from PyQt5.QtWidgets import QWizard, QWizardPage, QVBoxLayout, QPushButton, QComboBox, QLabel, QFileDialog
 from .dialogs.device_config import AudioDeviceDialog
 from ..config.settings import AudioMIDISettings
 import subprocess
 import ctypes
 import logging
+from src.utils.learning_manager import LearningManager
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -126,6 +127,10 @@ class OptionsPage(QWizardPage):
         self.ai_protocol_settings_button.clicked.connect(self.ai_protocol_settings)
         layout.addWidget(self.ai_protocol_settings_button)
         
+        self.upload_text_file_button = QPushButton("Upload Text File for AI Learning")
+        self.upload_text_file_button.clicked.connect(self.upload_text_file)
+        layout.addWidget(self.upload_text_file_button)
+        
         self.setLayout(layout)
         
     def audio_settings(self):
@@ -139,6 +144,16 @@ class OptionsPage(QWizardPage):
     def ai_protocol_settings(self):
         logger.info("AI Protocol Settings action triggered")
         # Implement the logic to handle AI Protocol Settings
+
+    def upload_text_file(self):
+        file_dialog = QFileDialog()
+        file_path, _ = file_dialog.getOpenFileName(self, "Select Text File", "", "Text Files (*.txt *.pdf *.md)")
+        if file_path:
+            learning_manager = LearningManager()
+            text_content = learning_manager.process_text_file(file_path)
+            if text_content:
+                learning_manager.learn_from_text(text_content)
+                logger.info(f"Successfully processed and learned from {file_path}")
 
 class ComponentsPage(QWizardPage):
     def __init__(self):
