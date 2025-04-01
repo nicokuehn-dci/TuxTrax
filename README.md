@@ -387,3 +387,35 @@ The `filter_patterns` method allows you to filter patterns into categories, such
 
 The `recombine_patterns` method uses Markov chains to mix elements from your own library, creating new and unique drum patterns. This method provides endless possibilities for creative recombination of your existing patterns.
 
+### AI-Assisted Generation
+
+#### Tools:
+
+* **Magenta Studio:** Open-source AI music tools
+* **AIVA:** AI composition assistant
+* **ChatGPT-4 Music Plugins:** e.g., Melobytes
+
+#### Automated MIDI Generation Tools
+
+| Tool           | Features                                                      |
+|----------------|---------------------------------------------------------------|
+| DrumGizmo      | Open-source drum sampler with MIDI pattern randomization       |
+| Hydrogen       | Pattern-based drum machine with MIDI export                   |
+| ZynAddSubFX    | Synthesizer with algorithmic MIDI generation                  |
+
+#### Instructions for Using Magenta Studio, AIVA, and ChatGPT-4 Music Plugins
+
+1. **Magenta Studio:**
+    - Install Magenta Studio using the provided setup script.
+    - Configure Magenta Studio by running `magenta-studio --configure`.
+    - Use the `generate_music_magenta` method in the audio engine to generate music.
+
+2. **AIVA:**
+    - Install AIVA using the provided setup script.
+    - Configure AIVA by running `aiva --configure`.
+    - Use the `generate_music_aiva` method in the audio engine to generate music.
+
+3. **ChatGPT-4 Music Plugins:**
+    - Install ChatGPT-4 Music Plugins using the provided setup script.
+    - Configure ChatGPT-4 Music Plugins by running `chatgpt4-music-plugins --configure`.
+    - Use the `generate_music_chatgpt4` method in the audio engine to generate music.

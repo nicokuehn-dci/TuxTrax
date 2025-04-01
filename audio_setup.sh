@@ -149,6 +149,36 @@ EOF
     sudo apt-get install -y linux-lowlatency || handle_error "Failed to install low-latency kernel"
 }
 
+install_magenta_studio() {
+    echo -e "${YELLOW}Installing Magenta Studio...${NC}"
+    sudo apt-get install -y magenta-studio || handle_error "Failed to install Magenta Studio"
+}
+
+install_aiva() {
+    echo -e "${YELLOW}Installing AIVA...${NC}"
+    sudo apt-get install -y aiva || handle_error "Failed to install AIVA"
+}
+
+install_chatgpt4_music_plugins() {
+    echo -e "${YELLOW}Installing ChatGPT-4 Music Plugins...${NC}"
+    sudo apt-get install -y chatgpt4-music-plugins || handle_error "Failed to install ChatGPT-4 Music Plugins"
+}
+
+configure_magenta_studio() {
+    echo -e "${YELLOW}Configuring Magenta Studio...${NC}"
+    magenta-studio --configure || handle_error "Failed to configure Magenta Studio"
+}
+
+configure_aiva() {
+    echo -e "${YELLOW}Configuring AIVA...${NC}"
+    aiva --configure || handle_error "Failed to configure AIVA"
+}
+
+configure_chatgpt4_music_plugins() {
+    echo -e "${YELLOW}Configuring ChatGPT-4 Music Plugins...${NC}"
+    chatgpt4-music-plugins --configure || handle_error "Failed to configure ChatGPT-4 Music Plugins"
+}
+
 main() {
     check_dependencies
     if ! verify_pipewire; then
@@ -164,6 +194,12 @@ main() {
     configure_pipewire_tweaks
     configure_persistent_device_routing
     apply_system_tweaks
+    install_magenta_studio
+    install_aiva
+    install_chatgpt4_music_plugins
+    configure_magenta_studio
+    configure_aiva
+    configure_chatgpt4_music_plugins
     
     echo -e "\n${GREEN}Audio setup completed successfully!${NC}"
     echo -e "Next steps:"

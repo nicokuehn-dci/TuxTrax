@@ -19,6 +19,12 @@ config['GUI'] = {
     'default_scale': 'C Major'
 }
 
+config['AI'] = {
+    'magenta_studio_path': '/usr/local/bin/magenta-studio',
+    'aiva_path': '/usr/local/bin/aiva',
+    'chatgpt4_music_plugins_path': '/usr/local/bin/chatgpt4-music-plugins'
+}
+
 # Write default settings to file
 with open('system_settings.ini', 'w') as configfile:
     config.write(configfile)

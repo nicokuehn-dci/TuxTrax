@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Configuration
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
-REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pipewire', 'aconnect', 'amidi', 'arecord']
+REQUIRED_BINARIES = ['pw-cli', 'ffmpeg', 'pipewire', 'aconnect', 'amidi', 'arecord', 'magenta-studio', 'aiva', 'chatgpt4-music-plugins']
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -120,6 +120,30 @@ def setup_multitrack_recording():
     logger.info("🔧 Setting up multi-track recording...")
     # Add any necessary configuration or setup for multi-track recording here
 
+def configure_magenta_studio():
+    try:
+        logger.info("🔧 Configuring Magenta Studio...")
+        subprocess.run(['magenta-studio', '--configure'], check=True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error configuring Magenta Studio: {e}")
+        raise
+
+def configure_aiva():
+    try:
+        logger.info("🔧 Configuring AIVA...")
+        subprocess.run(['aiva', '--configure'], check=True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error configuring AIVA: {e}")
+        raise
+
+def configure_chatgpt4_music_plugins():
+    try:
+        logger.info("🔧 Configuring ChatGPT-4 Music Plugins...")
+        subprocess.run(['chatgpt4-music-plugins', '--configure'], check=True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error configuring ChatGPT-4 Music Plugins: {e}")
+        raise
+
 def launch_app():
     try:
         logger.info("🚀 Launching TuxTrax...")
@@ -143,7 +167,7 @@ def system_check():
         issues.append("PipeWire is not properly configured")
     
     if missing := check_system_deps():
-        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install pipewire ffmpeg pipewire-pulse aconnect amidi arecord")
+        issues.append(f"Missing binaries: {', '.join(missing)}\n  sudo apt install pipewire ffmpeg pipewire-pulse aconnect amidi arecord magenta-studio aiva chatgpt4-music-plugins")
     
     if issues:
         logger.error("\n❌ System configuration issues:")
@@ -203,6 +227,9 @@ def main():
         setup_midi_devices()
         setup_recording_choices()
         setup_multitrack_recording()
+        configure_magenta_studio()
+        configure_aiva()
+        configure_chatgpt4_music_plugins()
         
         # Launch application after all configurations are complete
         launch_app()
