@@ -7,6 +7,7 @@ import shutil
 import argparse
 import logging
 from pathlib import Path
+from src.utils.learning_manager import LearningManager
 
 # Configuration
 PYTHON_CMD = "python3" if platform.system() != "Windows" else "python"
@@ -206,6 +207,8 @@ def main():
     try:
         setup_virtualenv()
         install_dependencies()
+        learning_manager = LearningManager()
+        learning_manager.capture_user_input("Setup and dependencies installed")
         configure_pipewire()
         configure_pipewire_audio_midi()
         setup_midi_devices()
@@ -215,6 +218,7 @@ def main():
         
         # Launch application after all configurations are complete
         launch_app()
+        learning_manager.capture_user_output("TuxTrax launched")
         
     except Exception as e:
         logger.error(f"\n❌ Setup failed: {e}")

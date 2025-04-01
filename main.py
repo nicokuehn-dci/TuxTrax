@@ -2,6 +2,7 @@ import subprocess
 import sys
 import os
 import logging
+from src.utils.learning_manager import LearningManager
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -40,7 +41,10 @@ def launch_electron_app():
 def main():
     setup_virtualenv()
     install_dependencies()
+    learning_manager = LearningManager()
+    learning_manager.capture_user_input("Setup and dependencies installed")
     launch_electron_app()
+    learning_manager.capture_user_output("Electron app launched")
 
 if __name__ == "__main__":
     try:

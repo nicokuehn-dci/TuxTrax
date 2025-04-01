@@ -419,3 +419,31 @@ The `recombine_patterns` method uses Markov chains to mix elements from your own
     - Install ChatGPT-4 Music Plugins using the provided setup script.
     - Configure ChatGPT-4 Music Plugins by running `chatgpt4-music-plugins --configure`.
     - Use the `generate_music_chatgpt4` method in the audio engine to generate music.
+
+## Learning Capabilities: Continuous Improvement
+
+TuxTrax now includes learning capabilities that allow the software to learn from every user input and output, making it more stable and intelligent over time. This is achieved through the integration of the `LearningManager` class, which captures user interactions and updates the model accordingly.
+
+### How It Works
+
+* **Capture User Inputs:** The `LearningManager` captures user inputs, such as actions taken within the software.
+* **Capture User Outputs:** The `LearningManager` also captures user outputs, such as the results of actions taken.
+* **Update Model:** Based on the captured inputs and outputs, the `LearningManager` updates the model to improve the software's performance and stability.
+
+### Benefits
+
+* **Continuous Learning:** The software continuously learns from user interactions, becoming more intelligent and stable over time.
+* **Personalized Experience:** As the software learns from your interactions, it can provide a more personalized and optimized experience.
+
+### Example
+
+For example, if you frequently use certain effects or settings, the software can learn to prioritize those options, making your workflow more efficient.
+
+### Getting Started with Learning Capabilities
+
+To start using the learning capabilities, simply use TuxTrax as you normally would. The `LearningManager` will automatically capture your interactions and update the model in the background.
+
+### Future Enhancements
+
+We plan to further enhance the learning capabilities by incorporating more advanced machine learning algorithms and expanding the range of interactions that the software can learn from.
+
