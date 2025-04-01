@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWizard, QWizardPage, QVBoxLayout, QPushButton
 from .dialogs.device_config import AudioDeviceDialog
 from ..config.settings import AudioMIDISettings
 import subprocess
-import pyudev
+import ctypes
 import logging
 
 # Set up logging
@@ -64,11 +64,19 @@ class DeviceHotplugPage(QWizardPage):
         
     def start_monitoring(self):
         try:
-            context = pyudev.Context()
-            monitor = pyudev.Monitor.from_netlink(context)
-            monitor.filter_by(subsystem='usb')
-            observer = pyudev.MonitorObserver(monitor, self.device_event)
-            observer.start()
+            libudev = ctypes.CDLL('libudev.so.1')
+            context = libudev.udev_new()
+            monitor = libudev.udev_monitor_new_from_netlink(context, b'udev')
+            libudev.udev_monitor_filter_add_match_subsystem_devtype(monitor, b'usb', None)
+            libudev.udev_monitor_enable_receiving(monitor)
+            fd = libudev.udev_monitor_get_fd(monitor)
+            
+            while True:
+                rlist, _, _ = select.select([fd], [], [], 1)
+                if fd in rlist:
+                    device = libudev.udev_monitor_receive_device(monitor)
+                    action = libudev.udev_device_get_action(device)
+                    self.device_event(action, device)
         except Exception as e:
             logger.error(f"Unhandled exception: {e}")
         
