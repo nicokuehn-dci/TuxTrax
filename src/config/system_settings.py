@@ -20,9 +20,7 @@ config['GUI'] = {
 }
 
 config['AI'] = {
-    'magenta_studio_path': '/usr/local/bin/magenta-studio',
-    'aiva_path': '/usr/local/bin/aiva',
-    'chatgpt4_music_plugins_path': '/usr/local/bin/chatgpt4-music-plugins'
+    'magenta_studio_path': '/usr/local/bin/magenta-studio'
 }
 
 # Write default settings to file

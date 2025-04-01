@@ -97,7 +97,7 @@ class AIProtocolPage(QWizardPage):
         
         layout = QVBoxLayout()
         self.ai_protocol_combo = QComboBox()
-        self.ai_protocol_combo.addItems(['Magenta Studio', 'AIVA', 'ChatGPT-4 Music Plugins'])
+        self.ai_protocol_combo.addItems(['Magenta Studio'])
         layout.addWidget(QLabel("AI Protocol:"))
         layout.addWidget(self.ai_protocol_combo)
         self.setLayout(layout)

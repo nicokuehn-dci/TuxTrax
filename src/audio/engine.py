@@ -93,19 +93,3 @@ class AudioEngine:
             logger.info(f"Music generated using Magenta Studio: {output_path}")
         except subprocess.CalledProcessError as e:
             logger.error(f"Error generating music with Magenta Studio: {e}")
-
-    def generate_music_aiva(self, style, output_path):
-        """Generate music using AIVA."""
-        try:
-            subprocess.run(['aiva', '--style', style, '--output', output_path], check=True)
-            logger.info(f"Music generated using AIVA: {output_path}")
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Error generating music with AIVA: {e}")
-
-    def generate_music_chatgpt4(self, prompt, output_path):
-        """Generate music using ChatGPT-4 Music Plugins."""
-        try:
-            subprocess.run(['chatgpt4-music-plugins', '--prompt', prompt, '--output', output_path], check=True)
-            logger.info(f"Music generated using ChatGPT-4 Music Plugins: {output_path}")
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Error generating music with ChatGPT-4 Music Plugins: {e}")
