@@ -61,7 +61,8 @@ class MainWindow(QMainWindow):
         self.menu.file_menu.actions()[0].triggered.connect(self.new_file)
         self.menu.file_menu.actions()[1].triggered.connect(self.open_file)
         self.menu.file_menu.actions()[2].triggered.connect(self.save_file)
-        self.menu.file_menu.actions()[3].triggered.connect(self.exit_app)
+        self.menu.file_menu.actions()[3].triggered.connect(self.select_ai_protocol)
+        self.menu.file_menu.actions()[4].triggered.connect(self.exit_app)
         self.menu.edit_menu.actions()[0].triggered.connect(self.undo)
         self.menu.edit_menu.actions()[1].triggered.connect(self.redo)
         self.menu.edit_menu.actions()[2].triggered.connect(self.cut)
@@ -144,6 +145,10 @@ class MainWindow(QMainWindow):
 
     def record(self):
         logger.info("Record action triggered")
+
+    def select_ai_protocol(self):
+        logger.info("Select AI Protocol action triggered")
+        # Implement the logic to handle AI protocol selection
 
 def main():
     app = QApplication(sys.argv)

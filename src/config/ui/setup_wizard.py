@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWizard, QWizardPage, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWizard, QWizardPage, QVBoxLayout, QPushButton, QComboBox, QLabel
 from .dialogs.device_config import AudioDeviceDialog
 from ..config.settings import AudioMIDISettings
 import subprocess
@@ -17,6 +17,7 @@ class SetupWizard(QWizard):
         self.addPage(AudioDevicePage())
         self.addPage(AudioRoutingPage())
         self.addPage(DeviceHotplugPage())
+        self.addPage(AIProtocolPage())  # Add AI Protocol selection page
 
 class AudioDevicePage(QWizardPage):
     def __init__(self):
@@ -85,3 +86,21 @@ class DeviceHotplugPage(QWizardPage):
             logger.info(f"Device {action}: {device}")
         except Exception as e:
             logger.error(f"Unhandled exception: {e}")
+
+class AIProtocolPage(QWizardPage):
+    def __init__(self):
+        super().__init__()
+        self.setTitle("AI Protocol Selection")
+        self.setSubTitle("Choose your preferred AI protocol for music generation.")
+        
+        layout = QVBoxLayout()
+        self.ai_protocol_combo = QComboBox()
+        self.ai_protocol_combo.addItems(['Magenta Studio', 'AIVA', 'ChatGPT-4 Music Plugins'])
+        layout.addWidget(QLabel("AI Protocol:"))
+        layout.addWidget(self.ai_protocol_combo)
+        self.setLayout(layout)
+        
+    def save_settings(self):
+        selected_protocol = self.ai_protocol_combo.currentText()
+        self.settings.config['AI']['protocol'] = selected_protocol
+        self.settings.save()

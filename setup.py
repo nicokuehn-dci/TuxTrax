@@ -31,7 +31,10 @@ try:
             'setuptools>=69.2.0',
             'pyyaml>=6.0.1',
             'pipewire>=0.3.50',
-            'alsa>=1.2.4'
+            'alsa>=1.2.4',
+            'magenta-studio>=1.0.0',  # Added dependency for Magenta Studio
+            'aiva>=1.0.0',  # Added dependency for AIVA
+            'chatgpt4-music-plugins>=1.0.0'  # Added dependency for ChatGPT-4 Music Plugins
         ],
         entry_points={
             'console_scripts': [

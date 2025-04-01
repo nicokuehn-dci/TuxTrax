@@ -21,15 +21,18 @@ class ElektronMenu(QMenuBar):
         open_action = QAction("Open", self)
         save_action = QAction("Save", self)
         exit_action = QAction("Exit", self)
+        select_ai_protocol_action = QAction("Select AI Protocol", self)
 
         self.file_menu.addAction(new_action)
         self.file_menu.addAction(open_action)
         self.file_menu.addAction(save_action)
+        self.file_menu.addAction(select_ai_protocol_action)
         self.file_menu.addAction(exit_action)
 
         new_action.triggered.connect(self.parent().new_file)
         open_action.triggered.connect(self.parent().open_file)
         save_action.triggered.connect(self.parent().save_file)
+        select_ai_protocol_action.triggered.connect(self.parent().select_ai_protocol)
         exit_action.triggered.connect(self.parent().exit_app)
 
     def _add_edit_menu_actions(self):

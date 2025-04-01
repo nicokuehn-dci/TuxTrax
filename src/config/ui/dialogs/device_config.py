@@ -30,4 +30,9 @@ class AudioDeviceDialog(QDialog):
         layout.addWidget(QLabel("Buffer Size:"))
         layout.addWidget(self.buffer_spin)
         
+        self.ai_protocol_combo = QComboBox()
+        self.ai_protocol_combo.addItems(['Magenta Studio', 'AIVA', 'ChatGPT-4 Music Plugins'])
+        layout.addWidget(QLabel("AI Protocol:"))
+        layout.addWidget(self.ai_protocol_combo)
+        
         self.setLayout(layout)
