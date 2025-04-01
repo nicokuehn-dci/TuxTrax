@@ -73,6 +73,12 @@ class MainWindow(QMainWindow):
         self.menu.view_menu.actions()[2].triggered.connect(self.toggle_full_screen)
         self.menu.help_menu.actions()[0].triggered.connect(self.show_about)
         self.menu.help_menu.actions()[1].triggered.connect(self.show_help)
+        self.menu.options_menu.actions()[0].triggered.connect(self.audio_settings)
+        self.menu.options_menu.actions()[1].triggered.connect(self.midi_settings)
+        self.menu.options_menu.actions()[2].triggered.connect(self.ai_protocol_settings)
+        self.menu.components_menu.actions()[0].triggered.connect(self.add_component)
+        self.menu.components_menu.actions()[1].triggered.connect(self.remove_component)
+        self.menu.components_menu.actions()[2].triggered.connect(self.manage_components)
 
         # Connect button actions to functions
         self.grid.play_button.clicked.connect(self.play)
@@ -149,6 +155,30 @@ class MainWindow(QMainWindow):
     def select_ai_protocol(self):
         logger.info("Select AI Protocol action triggered")
         # Implement the logic to handle AI protocol selection
+
+    def audio_settings(self):
+        logger.info("Audio Settings action triggered")
+        # Implement the logic to handle Audio Settings
+
+    def midi_settings(self):
+        logger.info("MIDI Settings action triggered")
+        # Implement the logic to handle MIDI Settings
+
+    def ai_protocol_settings(self):
+        logger.info("AI Protocol Settings action triggered")
+        # Implement the logic to handle AI Protocol Settings
+
+    def add_component(self):
+        logger.info("Add Component action triggered")
+        # Implement the logic to handle Add Component
+
+    def remove_component(self):
+        logger.info("Remove Component action triggered")
+        # Implement the logic to handle Remove Component
+
+    def manage_components(self):
+        logger.info("Manage Components action triggered")
+        # Implement the logic to handle Manage Components
 
 def main():
     app = QApplication(sys.argv)

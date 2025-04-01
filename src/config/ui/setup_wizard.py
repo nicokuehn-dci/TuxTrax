@@ -18,6 +18,8 @@ class SetupWizard(QWizard):
         self.addPage(AudioRoutingPage())
         self.addPage(DeviceHotplugPage())
         self.addPage(AIProtocolPage())  # Add AI Protocol selection page
+        self.addPage(OptionsPage())  # Add Options page
+        self.addPage(ComponentsPage())  # Add Components page
 
 class AudioDevicePage(QWizardPage):
     def __init__(self):
@@ -104,3 +106,69 @@ class AIProtocolPage(QWizardPage):
         selected_protocol = self.ai_protocol_combo.currentText()
         self.settings.config['AI']['protocol'] = selected_protocol
         self.settings.save()
+
+class OptionsPage(QWizardPage):
+    def __init__(self):
+        super().__init__()
+        self.setTitle("Options")
+        self.setSubTitle("Configure your audio, MIDI, and AI protocol settings.")
+        
+        layout = QVBoxLayout()
+        self.audio_settings_button = QPushButton("Audio Settings")
+        self.audio_settings_button.clicked.connect(self.audio_settings)
+        layout.addWidget(self.audio_settings_button)
+        
+        self.midi_settings_button = QPushButton("MIDI Settings")
+        self.midi_settings_button.clicked.connect(self.midi_settings)
+        layout.addWidget(self.midi_settings_button)
+        
+        self.ai_protocol_settings_button = QPushButton("AI Protocol Settings")
+        self.ai_protocol_settings_button.clicked.connect(self.ai_protocol_settings)
+        layout.addWidget(self.ai_protocol_settings_button)
+        
+        self.setLayout(layout)
+        
+    def audio_settings(self):
+        logger.info("Audio Settings action triggered")
+        # Implement the logic to handle Audio Settings
+
+    def midi_settings(self):
+        logger.info("MIDI Settings action triggered")
+        # Implement the logic to handle MIDI Settings
+
+    def ai_protocol_settings(self):
+        logger.info("AI Protocol Settings action triggered")
+        # Implement the logic to handle AI Protocol Settings
+
+class ComponentsPage(QWizardPage):
+    def __init__(self):
+        super().__init__()
+        self.setTitle("Components")
+        self.setSubTitle("Manage your components.")
+        
+        layout = QVBoxLayout()
+        self.add_component_button = QPushButton("Add Component")
+        self.add_component_button.clicked.connect(self.add_component)
+        layout.addWidget(self.add_component_button)
+        
+        self.remove_component_button = QPushButton("Remove Component")
+        self.remove_component_button.clicked.connect(self.remove_component)
+        layout.addWidget(self.remove_component_button)
+        
+        self.manage_components_button = QPushButton("Manage Components")
+        self.manage_components_button.clicked.connect(self.manage_components)
+        layout.addWidget(self.manage_components_button)
+        
+        self.setLayout(layout)
+        
+    def add_component(self):
+        logger.info("Add Component action triggered")
+        # Implement the logic to handle Add Component
+
+    def remove_component(self):
+        logger.info("Remove Component action triggered")
+        # Implement the logic to handle Remove Component
+
+    def manage_components(self):
+        logger.info("Manage Components action triggered")
+        # Implement the logic to handle Manage Components

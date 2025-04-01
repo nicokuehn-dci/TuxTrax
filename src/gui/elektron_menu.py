@@ -10,11 +10,15 @@ class ElektronMenu(QMenuBar):
         self.edit_menu = self.addMenu("Edit")
         self.view_menu = self.addMenu("View")
         self.help_menu = self.addMenu("Help")
+        self.options_menu = self.addMenu("Options")
+        self.components_menu = self.addMenu("Components")
 
         self._add_file_menu_actions()
         self._add_edit_menu_actions()
         self._add_view_menu_actions()
         self._add_help_menu_actions()
+        self._add_options_menu_actions()
+        self._add_components_menu_actions()
 
     def _add_file_menu_actions(self):
         new_action = QAction("New", self)
@@ -76,3 +80,29 @@ class ElektronMenu(QMenuBar):
 
         about_action.triggered.connect(self.parent().show_about)
         help_action.triggered.connect(self.parent().show_help)
+
+    def _add_options_menu_actions(self):
+        audio_settings_action = QAction("Audio Settings", self)
+        midi_settings_action = QAction("MIDI Settings", self)
+        ai_protocol_settings_action = QAction("AI Protocol Settings", self)
+
+        self.options_menu.addAction(audio_settings_action)
+        self.options_menu.addAction(midi_settings_action)
+        self.options_menu.addAction(ai_protocol_settings_action)
+
+        audio_settings_action.triggered.connect(self.parent().audio_settings)
+        midi_settings_action.triggered.connect(self.parent().midi_settings)
+        ai_protocol_settings_action.triggered.connect(self.parent().ai_protocol_settings)
+
+    def _add_components_menu_actions(self):
+        add_component_action = QAction("Add Component", self)
+        remove_component_action = QAction("Remove Component", self)
+        manage_components_action = QAction("Manage Components", self)
+
+        self.components_menu.addAction(add_component_action)
+        self.components_menu.addAction(remove_component_action)
+        self.components_menu.addAction(manage_components_action)
+
+        add_component_action.triggered.connect(self.parent().add_component)
+        remove_component_action.triggered.connect(self.parent().remove_component)
+        manage_components_action.triggered.connect(self.parent().manage_components)
