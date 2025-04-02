@@ -351,3 +351,27 @@ class SamplerEngine:
         except Exception as e:
             logger.error(f"Error loading pattern {name}: {e}")
             return []
+
+    def rescan_audio_library(self):
+        """Rescan the audio library to reload all samples and loops."""
+        try:
+            self.samples.clear()
+            self.loops.clear()
+            sample_dir = "path/to/sample/directory"
+            loop_dir = "path/to/loop/directory"
+            
+            for root, _, files in os.walk(sample_dir):
+                for file in files:
+                    if file.endswith(('.wav', '.mp3', '.flac')):
+                        file_path = os.path.join(root, file)
+                        self.load_sample(file_path, os.path.splitext(file)[0])
+            
+            for root, _, files in os.walk(loop_dir):
+                for file in files:
+                    if file.endswith(('.wav', '.mp3', '.flac')):
+                        file_path = os.path.join(root, file)
+                        self.load_loop(file_path, os.path.splitext(file)[0])
+            
+            logger.info("Audio library rescan completed.")
+        except Exception as e:
+            logger.error(f"Error rescanning audio library: {e}")

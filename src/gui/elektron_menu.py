@@ -85,14 +85,17 @@ class ElektronMenu(QMenuBar):
         audio_settings_action = QAction("Audio Settings", self)
         midi_settings_action = QAction("MIDI Settings", self)
         ai_protocol_settings_action = QAction("AI Protocol Settings", self)
+        rescan_audio_library_action = QAction("Rescan Audio Library", self)  # Pafd5
 
         self.options_menu.addAction(audio_settings_action)
         self.options_menu.addAction(midi_settings_action)
         self.options_menu.addAction(ai_protocol_settings_action)
+        self.options_menu.addAction(rescan_audio_library_action)  # Pafd5
 
         audio_settings_action.triggered.connect(self.parent().audio_settings)
         midi_settings_action.triggered.connect(self.parent().midi_settings)
         ai_protocol_settings_action.triggered.connect(self.parent().ai_protocol_settings)
+        rescan_audio_library_action.triggered.connect(self.parent().rescan_audio_library)  # P657a
 
     def _add_components_menu_actions(self):
         add_component_action = QAction("Add Component", self)

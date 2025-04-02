@@ -76,6 +76,7 @@ class MainWindow(QMainWindow):
         self.menu.options_menu.actions()[0].triggered.connect(self.audio_settings)
         self.menu.options_menu.actions()[1].triggered.connect(self.midi_settings)
         self.menu.options_menu.actions()[2].triggered.connect(self.ai_protocol_settings)
+        self.menu.options_menu.actions()[3].triggered.connect(self.rescan_audio_library)  # Pcf00
         self.menu.components_menu.actions()[0].triggered.connect(self.add_component)
         self.menu.components_menu.actions()[1].triggered.connect(self.remove_component)
         self.menu.components_menu.actions()[2].triggered.connect(self.manage_components)
@@ -215,6 +216,10 @@ class MainWindow(QMainWindow):
                 self.pattern_status_label.setText(f"Pattern '{pattern_name}' not found.")
         else:
             self.pattern_status_label.setText("Please enter a pattern name.")
+
+    def rescan_audio_library(self):  # Pdbe2
+        logger.info("Rescan Audio Library action triggered")
+        self.sampler.rescan_audio_library()
 
 def main():
     app = QApplication(sys.argv)
