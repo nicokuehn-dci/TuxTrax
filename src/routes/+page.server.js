@@ -4,9 +4,15 @@ import { error } from '@sveltejs/kit';
 export async function load({ url }) {
     const page = parseInt(url.searchParams.get('page')) || 1;
     const perPage = parseInt(url.searchParams.get('perPage')) || 10;
+    const search = url.searchParams.get('search') || '';
+    const filter = url.searchParams.get('filter') || '';
 
     try {
-        const distros = await pb.collection('distros').getList(page, perPage, { sort: 'release_date' });
+        const distros = await pb.collection('distros').getList(page, perPage, {
+            sort: 'release_date',
+            filter: filter ? { [filter]: true } : {},
+            search: search ? { name: { $regex: search, $options: 'i' } } : {}
+        });
 
         return {
             distros: distros.items,

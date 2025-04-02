@@ -6,9 +6,15 @@
   let page = 1;
   let perPage = 10;
   let totalPages = 1;
+  let search = '';
+  let filter = '';
 
   async function fetchDistros() {
-    const response = await pb.collection('distros').getList(page, perPage, { sort: 'release_date' });
+    const response = await pb.collection('distros').getList(page, perPage, {
+      sort: 'release_date',
+      search: search ? { name: { $regex: search, $options: 'i' } } : {},
+      filter: filter ? { [filter]: true } : {}
+    });
     distros = response.items;
     totalPages = response.totalPages;
   }
@@ -27,11 +33,30 @@
     }
   }
 
+  function handleSearchChange(event) {
+    search = event.target.value;
+    fetchDistros();
+  }
+
+  function handleFilterChange(event) {
+    filter = event.target.value;
+    fetchDistros();
+  }
+
   onMount(fetchDistros);
 </script>
 
 <main>
   <h1>Distributions</h1>
+  <div>
+    <input type="text" placeholder="Search..." on:input={handleSearchChange} />
+    <select on:change={handleFilterChange}>
+      <option value="">All</option>
+      <option value="stable">Stable</option>
+      <option value="beta">Beta</option>
+      <option value="alpha">Alpha</option>
+    </select>
+  </div>
   <ul>
     {#each distros as distro}
       <li>{distro.name} - {distro.release_date}</li>
