@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte';
-  import { pb } from '$lib/pocketbase';
 
   let distros = [];
   let page = 1;
@@ -10,13 +9,10 @@
   let filter = '';
 
   async function fetchDistros() {
-    const response = await pb.collection('distros').getList(page, perPage, {
-      sort: 'release_date',
-      search: search ? { name: { $regex: search, $options: 'i' } } : {},
-      filter: filter ? { [filter]: true } : {}
-    });
-    distros = response.items;
-    totalPages = response.totalPages;
+    const response = await fetch(`/api/distros?page=${page}&perPage=${perPage}&search=${search}&filter=${filter}`);
+    const data = await response.json();
+    distros = data.distros;
+    totalPages = data.pagination.totalPages;
   }
 
   function nextPage() {
@@ -59,7 +55,10 @@
   </div>
   <ul>
     {#each distros as distro}
-      <li>{distro.name} - {distro.release_date}</li>
+      <li>
+        {distro.name} - {distro.release_date}
+        <img src={distro.logoUrl} alt="{distro.name} logo" />
+      </li>
     {/each}
   </ul>
   <div>

@@ -14,6 +14,12 @@ export async function load({ url }) {
             search: search ? { name: { $regex: search, $options: 'i' } } : {}
         });
 
+        // Add logoUrl field to each distro object
+        const baseUrl = process.env.PUBLIC_POCKETBASE_URL;
+        distros.items.forEach(distro => {
+            distro.logoUrl = `${baseUrl}/api/files/${distro.collectionId}/${distro.id}/${distro.logo}`;
+        });
+
         return {
             distros: distros.items,
             pagination: {
