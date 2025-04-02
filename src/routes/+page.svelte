@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import { debounce } from 'lodash';
+  import VirtualList from 'svelte-virtual-list';
 
   let distros = [];
   let page = 1;
@@ -9,6 +11,7 @@
   let filter = '';
   let loading = false;
   let error = '';
+  let observer;
 
   async function fetchDistros() {
     loading = true;
@@ -16,7 +19,7 @@
     try {
       const response = await fetch(`/api/distros?page=${page}&perPage=${perPage}&search=${search}&filter=${filter}`);
       const data = await response.json();
-      distros = data.distros;
+      distros = [...distros, ...data.distros];
       totalPages = data.pagination.totalPages;
       localStorage.setItem('cachedDistros', JSON.stringify(distros));
     } catch (err) {
@@ -50,17 +53,31 @@
     }
   }
 
-  function handleSearchChange(event) {
+  const handleSearchChange = debounce((event) => {
     search = event.target.value;
+    distros = [];
+    page = 1;
     fetchDistros();
-  }
+  }, 300);
 
-  function handleFilterChange(event) {
+  const handleFilterChange = debounce((event) => {
     filter = event.target.value;
+    distros = [];
+    page = 1;
     fetchDistros();
+  }, 300);
+
+  function handleIntersection(entries) {
+    if (entries[0].isIntersecting && page < totalPages) {
+      nextPage();
+    }
   }
 
-  onMount(fetchDistros);
+  onMount(() => {
+    fetchDistros();
+    observer = new IntersectionObserver(handleIntersection);
+    observer.observe(document.querySelector('#load-more-trigger'));
+  });
 </script>
 
 <main>
@@ -80,17 +97,12 @@
     <p>{error}</p>
     <button on:click={retryFetch}>Retry</button>
   {:else}
-    <ul>
-      {#each distros as distro}
-        <li>
-          {distro?.name ?? 'Unknown'} - {distro?.release_date ?? 'Date unknown'}
-          <img src={distro?.logoUrl ?? 'default-logo.png'} alt="{distro?.name ?? 'Unknown'} logo" />
-        </li>
-      {/each}
-    </ul>
-    <div>
-      <button on:click={prevPage} disabled={page === 1}>Previous</button>
-      <button on:click={nextPage} disabled={page === totalPages}>Next</button>
-    </div>
+    <VirtualList items={distros} let:item>
+      <div>
+        {item?.name ?? 'Unknown'} - {item?.release_date ?? 'Date unknown'}
+        <img src={item?.logoUrl ?? 'default-logo.png'} alt="{item?.name ?? 'Unknown'} logo" />
+      </div>
+    </VirtualList>
+    <div id="load-more-trigger"></div>
   {/if}
 </main>
