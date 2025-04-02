@@ -32,7 +32,7 @@ def check_audio_group():
         groups = subprocess.check_output(['groups']).decode().split()
         return 'audio' in groups
     except Exception as e:
-        logger.error(f"Error checking audio group: {e}")
+        logger.error(f"Error checking audio group: {e}", exc_info=True)
         return False
 
 def check_pipewire_version():
@@ -42,7 +42,7 @@ def check_pipewire_version():
         version = tuple(map(int, version_str.split('.')))
         return version >= (0, 3, 50)
     except Exception as e:
-        logger.error(f"Error checking PipeWire version: {e}")
+        logger.error(f"Error checking PipeWire version: {e}", exc_info=True)
         return False
 
 def check_pipewire_configuration():
@@ -51,7 +51,7 @@ def check_pipewire_configuration():
         logger.info("PipeWire is configured and running.")
         return True
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error checking PipeWire configuration: {e}")
+        logger.error(f"Error checking PipeWire configuration: {e}", exc_info=True)
         return False
 
 def check_system_deps():
@@ -66,8 +66,7 @@ def configure_pipewire():
         subprocess.run(['pw-cli', 'info'], check=True)
         logger.info("PipeWire is configured and running.")
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error configuring PipeWire: {e}")
-        raise
+        logger.error(f"Error configuring PipeWire: {e}", exc_info=True)
 
 def configure_pipewire_audio_midi():
     try:
@@ -79,8 +78,7 @@ def configure_pipewire_audio_midi():
         subprocess.run(['pw-cli', 'load-module', 'module-jack-sink'], check=True)
         logger.info("PipeWire audio and MIDI configuration complete.")
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error configuring PipeWire for audio and MIDI: {e}")
-        raise
+        logger.error(f"Error configuring PipeWire for audio and MIDI: {e}", exc_info=True)
 
 def setup_midi_devices():
     try:
@@ -88,8 +86,7 @@ def setup_midi_devices():
         subprocess.run(['aconnect', '-i', '-o'], check=True)
         subprocess.run(['amidi', '-l'], check=True)
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error setting up MIDI devices: {e}")
-        raise
+        logger.error(f"Error setting up MIDI devices: {e}", exc_info=True)
 
 def setup_recording_choices():
     try:
@@ -114,8 +111,7 @@ def setup_recording_choices():
             check=True,
         )
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error setting up recording choices: {e}")
-        raise
+        logger.error(f"Error setting up recording choices: {e}", exc_info=True)
 
 def setup_multitrack_recording():
     logger.info("🔧 Setting up multi-track recording...")
@@ -126,15 +122,14 @@ def configure_magenta_studio():
         logger.info("🔧 Configuring Magenta Studio...")
         subprocess.run(['magenta-studio', '--configure'], check=True)
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error configuring Magenta Studio: {e}")
-        raise
+        logger.error(f"Error configuring Magenta Studio: {e}", exc_info=True)
 
 def launch_app():
     try:
         logger.info("🚀 Launching TuxTrax...")
         subprocess.run(["tuxtrax"], check=True)
     except subprocess.CalledProcessError as e:
-        logger.error(f"❌ Failed to launch TuxTrax: {e}")
+        logger.error(f"❌ Failed to launch TuxTrax: {e}", exc_info=True)
     except KeyboardInterrupt:
         logger.info("\n🛑 Session terminated")
 
@@ -177,8 +172,7 @@ def setup_virtualenv():
         subprocess.run(activate_command, shell=True, check=True)
         logger.info("Virtual environment activated.")
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error setting up virtual environment: {e}")
-        raise
+        logger.error(f"Error setting up virtual environment: {e}", exc_info=True)
 
 def install_dependencies():
     try:
@@ -187,8 +181,7 @@ def install_dependencies():
         subprocess.run([PYTHON_CMD, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
         logger.info("Python dependencies installed.")
     except subprocess.CalledProcessError as e:
-        logger.error(f"Error installing Python dependencies: {e}")
-        raise
+        logger.error(f"Error installing Python dependencies: {e}", exc_info=True)
 
 def main():
     args = parse_args()
@@ -228,7 +221,7 @@ def main():
         learning_manager.capture_user_output("TuxTrax launched")
         
     except Exception as e:
-        logger.error(f"\n❌ Setup failed: {e}")
+        logger.error(f"\n❌ Setup failed: {e}", exc_info=True)
         sys.exit(1)
 
 if __name__ == "__main__":

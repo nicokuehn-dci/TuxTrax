@@ -9,6 +9,11 @@ logger = logging.getLogger(__name__)
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
+def log_error(message, severity="non-severe"):
+    logger.error(message)
+    if severity == "severe":
+        raise SystemExit(message)
+
 try:
     setup(
         name="TuxTrax",
@@ -49,5 +54,4 @@ try:
     )
     logger.info("Setup completed successfully.")
 except Exception as e:
-    logger.error(f"Error during setup: {e}")
-    raise
+    log_error(f"Error during setup: {e}", severity="severe")

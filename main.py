@@ -19,7 +19,11 @@ def setup_virtualenv():
         logger.info("Virtual environment activated.")
     except subprocess.CalledProcessError as e:
         logger.error(f"Error setting up virtual environment: {e}")
-        raise
+        if e.returncode == 1:
+            logger.error("Severe error: Virtual environment setup failed.")
+            raise
+        else:
+            logger.error("Non-severe error: Continuing execution.")
 
 def install_dependencies():
     try:
@@ -29,26 +33,46 @@ def install_dependencies():
         logger.info("Python dependencies installed.")
     except subprocess.CalledProcessError as e:
         logger.error(f"Error installing Python dependencies: {e}")
-        raise
+        if e.returncode == 1:
+            logger.error("Severe error: Dependency installation failed.")
+            raise
+        else:
+            logger.error("Non-severe error: Continuing execution.")
 
 def launch_electron_app():
     try:
         subprocess.run(["npm", "start"], check=True)
     except subprocess.CalledProcessError as e:
         logger.error(f"Error launching Electron app: {e}")
-        sys.exit(1)
+        if e.returncode == 1:
+            logger.error("Severe error: Electron app launch failed.")
+            sys.exit(1)
+        else:
+            logger.error("Non-severe error: Continuing execution.")
 
 def main():
-    setup_virtualenv()
-    install_dependencies()
-    learning_manager = LearningManager()
-    learning_manager.capture_user_input("Setup and dependencies installed")
-    launch_electron_app()
-    learning_manager.capture_user_output("Electron app launched")
+    try:
+        setup_virtualenv()
+        install_dependencies()
+        learning_manager = LearningManager()
+        learning_manager.capture_user_input("Setup and dependencies installed")
+        launch_electron_app()
+        learning_manager.capture_user_output("Electron app launched")
+    except Exception as e:
+        logger.error(f"Unhandled exception: {e}")
+        if isinstance(e, subprocess.CalledProcessError) and e.returncode == 1:
+            logger.error("Severe error: Unhandled exception occurred.")
+            sys.exit(1)
+        else:
+            logger.error("Non-severe error: Continuing execution.")
 
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
         logger.error(f"Unhandled exception: {e}")
-        sys.exit(1)
+        if isinstance(e, subprocess.CalledProcessError) and e.returncode == 1:
+            logger.error("Severe error: Unhandled exception occurred.")
+            sys.exit(1)
+        else:
+            logger.error("Non-severe error: Continuing execution.")
