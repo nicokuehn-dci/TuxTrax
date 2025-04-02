@@ -13,3 +13,6 @@ python-rtmidi==1.5.6
 
 # Config
 configparser==5.3.0
+
+# Additional Dependencies
+mutagen
