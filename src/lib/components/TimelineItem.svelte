@@ -3,7 +3,7 @@
 </script>
 
 <div class="timeline-item">
-  <h2>{distro.name}</h2>
-  <p>{distro.description}</p>
-  <img src={distro.logoUrl} alt="{distro.name} logo" />
+  <h2>{distro?.name ?? 'Unknown'}</h2>
+  <p>{distro?.description ?? 'No description available'}</p>
+  <img src={distro?.logoUrl ?? 'default-logo.png'} alt="{distro?.name ?? 'Unknown'} logo" />
 </div>

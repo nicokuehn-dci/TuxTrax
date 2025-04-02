@@ -83,8 +83,8 @@
     <ul>
       {#each distros as distro}
         <li>
-          {distro.name} - {distro.release_date}
-          <img src={distro.logoUrl} alt="{distro.name} logo" />
+          {distro?.name ?? 'Unknown'} - {distro?.release_date ?? 'Date unknown'}
+          <img src={distro?.logoUrl ?? 'default-logo.png'} alt="{distro?.name ?? 'Unknown'} logo" />
         </li>
       {/each}
     </ul>

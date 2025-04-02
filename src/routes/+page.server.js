@@ -29,7 +29,7 @@ export async function load({ url }) {
         // Add logoUrl field to each distro object
         const baseUrl = process.env.PUBLIC_POCKETBASE_URL;
         distros.items.forEach(distro => {
-            distro.logoUrl = `${baseUrl}/api/files/${distro.collectionId}/${distro.id}/${distro.logo}`;
+            distro.logoUrl = distro.logo ? `${baseUrl}/api/files/${distro.collectionId}/${distro.id}/${distro.logo}` : 'default-logo.png';
         });
 
         // Cache the fetched data in localStorage
