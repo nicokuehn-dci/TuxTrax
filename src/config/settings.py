@@ -24,3 +24,13 @@ class AudioMIDISettings:
             "db_path": self.db_path,
             "pattern_save_path": self.pattern_save_path
         }
+
+    def save_to_json(self, file_path):
+        settings = self.save_settings()
+        with open(file_path, 'w') as json_file:
+            json.dump(settings, json_file)
+
+    def load_from_json(self, file_path):
+        with open(file_path, 'r') as json_file:
+            settings = json.load(json_file)
+            self.load_settings(settings)

@@ -63,3 +63,25 @@ class ProjectManager:
         except Exception as e:
             logger.error(f"Error loading pattern {name}: {e}")
             raise
+
+    def save_project_to_json(self, path, sampler_state, mixer_state):
+        try:
+            project_data = {
+                'samples': sampler_state.samples,
+                'midi_mapping': sampler_state.midi_mapper.mapping,
+                'mixer_presets': mixer_state.get_presets()
+            }
+            
+            with open(Path(path) / 'project.json', 'w') as f:
+                json.dump(project_data, f)
+        except Exception as e:
+            logger.error(f"Error saving project to JSON: {e}")
+            raise
+
+    def load_project_from_json(self, path):
+        try:
+            with open(Path(path) / 'project.json', 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error loading project from JSON: {e}")
+            raise

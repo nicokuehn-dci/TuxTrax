@@ -130,3 +130,17 @@ class LearningManager:
         except Exception as e:
             logger.error(f"Error loading from database: {e}")
             return []
+
+    def save_model_to_json(self, file_path):
+        try:
+            with open(file_path, 'w') as json_file:
+                json.dump(self.model, json_file)
+        except Exception as e:
+            logger.error(f"Error saving model to JSON file {file_path}: {e}")
+
+    def load_model_from_json(self, file_path):
+        try:
+            with open(file_path, 'r') as json_file:
+                self.model = json.load(json_file)
+        except Exception as e:
+            logger.error(f"Error loading model from JSON file {file_path}: {e}")
