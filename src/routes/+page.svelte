@@ -12,16 +12,22 @@
   let loading = false;
   let error = '';
   let observer;
+  let noResults = false;
 
   async function fetchDistros() {
     loading = true;
     error = '';
+    noResults = false;
     try {
       const response = await fetch(`/api/distros?page=${page}&perPage=${perPage}&search=${search}&filter=${filter}`);
       const data = await response.json();
-      distros = [...distros, ...data.distros];
-      totalPages = data.pagination.totalPages;
-      localStorage.setItem('cachedDistros', JSON.stringify(distros));
+      if (data.distros.length === 0) {
+        noResults = true;
+      } else {
+        distros = [...distros, ...data.distros];
+        totalPages = data.pagination.totalPages;
+        localStorage.setItem('cachedDistros', JSON.stringify(distros));
+      }
     } catch (err) {
       console.error('Failed to load distributions:', err);
       error = 'Could not load distribution data. Please check your connection or try again later.';
@@ -96,6 +102,8 @@
   {:else if error}
     <p>{error}</p>
     <button on:click={retryFetch}>Retry</button>
+  {:else if noResults}
+    <p>No distributions match your current filters. Try removing some filters.</p>
   {:else}
     <VirtualList items={distros} let:item>
       <div>
