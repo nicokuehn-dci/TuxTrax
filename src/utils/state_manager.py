@@ -45,3 +45,21 @@ class ProjectManager:
         except Exception as e:
             logger.error(f"Error loading state: {e}")
             raise
+
+    def save_pattern(self, path, name, pattern):
+        try:
+            pattern_path = Path(path) / f'{name}.json'
+            with open(pattern_path, 'w') as f:
+                json.dump(pattern, f)
+        except Exception as e:
+            logger.error(f"Error saving pattern {name}: {e}")
+            raise
+
+    def load_pattern(self, path, name):
+        try:
+            pattern_path = Path(path) / f'{name}.json'
+            with open(pattern_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error loading pattern {name}: {e}")
+            raise

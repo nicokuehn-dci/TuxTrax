@@ -4,6 +4,8 @@ from .midi_mapper import MidiMapper
 from ..utils.audio_utils import load_audio_file
 import logging
 import random
+import json
+import os
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -21,6 +23,7 @@ class SamplerEngine:
         tracks (list): List of tracks for multi-track recording
         automation_lanes (list): List of automation lanes for parameters
         swing (dict): Stores swing settings for all channels and individual channels
+        patterns (dict): Stores saved patterns with their names
     """
     
     def __init__(self):
@@ -32,6 +35,7 @@ class SamplerEngine:
         self.tracks = []
         self.automation_lanes = []
         self.swing = {'global': 0.0, 'channels': {}}
+        self.patterns = {}
         self._setup_multitrack()
         self._setup_automation_lanes()
 
@@ -343,4 +347,38 @@ class SamplerEngine:
             return recombined_pattern
         except Exception as e:
             logger.error(f"Error recombining patterns: {e}")
+            return []
+
+    def save_pattern(self, name, pattern):
+        """Save a pattern with a given name.
+        
+        Args:
+            name (str): Name to assign to the saved pattern
+            pattern (list): Pattern data to save
+        """
+        try:
+            self.patterns[name] = pattern
+            with open(f'patterns/{name}.json', 'w') as f:
+                json.dump(pattern, f)
+        except Exception as e:
+            logger.error(f"Error saving pattern {name}: {e}")
+
+    def load_pattern(self, name):
+        """Load a pattern by name.
+        
+        Args:
+            name (str): Name of the pattern to load
+            
+        Returns:
+            list: Loaded pattern data
+        """
+        try:
+            if name in self.patterns:
+                return self.patterns[name]
+            with open(f'patterns/{name}.json', 'r') as f:
+                pattern = json.load(f)
+                self.patterns[name] = pattern
+                return pattern
+        except Exception as e:
+            logger.error(f"Error loading pattern {name}: {e}")
             return []

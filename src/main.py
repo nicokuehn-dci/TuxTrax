@@ -2,7 +2,7 @@ import sys
 import sounddevice as sounddevice
 import numpy as np
 from threading import Thread, Lock
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget, QVBoxLayout, QPushButton, QLineEdit, QLabel
 from gui.elektron_menu import ElektronMenu
 from gui.performance_grid import PerformanceGrid
 from gui.transport_controls import TransportControls
@@ -84,6 +84,21 @@ class MainWindow(QMainWindow):
         self.grid.play_button.clicked.connect(self.play)
         self.grid.stop_button.clicked.connect(self.stop)
         self.grid.record_button.clicked.connect(self.record)
+
+        # Add UI elements for saving and loading patterns
+        self.save_pattern_button = QPushButton("Save Pattern")
+        self.load_pattern_button = QPushButton("Load Pattern")
+        self.pattern_name_input = QLineEdit()
+        self.pattern_name_input.setPlaceholderText("Pattern Name")
+        self.pattern_status_label = QLabel()
+
+        self.save_pattern_button.clicked.connect(self.save_pattern)
+        self.load_pattern_button.clicked.connect(self.load_pattern)
+
+        self.grid.layout.addWidget(self.pattern_name_input)
+        self.grid.layout.addWidget(self.save_pattern_button)
+        self.grid.layout.addWidget(self.load_pattern_button)
+        self.grid.layout.addWidget(self.pattern_status_label)
 
     def __del__(self):
         self.midi_mapper.stop_listening()
@@ -179,6 +194,27 @@ class MainWindow(QMainWindow):
     def manage_components(self):
         logger.info("Manage Components action triggered")
         # Implement the logic to handle Manage Components
+
+    def save_pattern(self):
+        pattern_name = self.pattern_name_input.text()
+        if pattern_name:
+            pattern = self.sampler.generate_drum_pattern()  # Example pattern generation
+            self.sampler.save_pattern(pattern_name, pattern)
+            self.pattern_status_label.setText(f"Pattern '{pattern_name}' saved.")
+        else:
+            self.pattern_status_label.setText("Please enter a pattern name.")
+
+    def load_pattern(self):
+        pattern_name = self.pattern_name_input.text()
+        if pattern_name:
+            pattern = self.sampler.load_pattern(pattern_name)
+            if pattern:
+                self.pattern_status_label.setText(f"Pattern '{pattern_name}' loaded.")
+                # Implement logic to use the loaded pattern
+            else:
+                self.pattern_status_label.setText(f"Pattern '{pattern_name}' not found.")
+        else:
+            self.pattern_status_label.setText("Please enter a pattern name.")
 
 def main():
     app = QApplication(sys.argv)
