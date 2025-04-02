@@ -7,12 +7,33 @@
   let totalPages = 1;
   let search = '';
   let filter = '';
+  let loading = false;
+  let error = '';
 
   async function fetchDistros() {
-    const response = await fetch(`/api/distros?page=${page}&perPage=${perPage}&search=${search}&filter=${filter}`);
-    const data = await response.json();
-    distros = data.distros;
-    totalPages = data.pagination.totalPages;
+    loading = true;
+    error = '';
+    try {
+      const response = await fetch(`/api/distros?page=${page}&perPage=${perPage}&search=${search}&filter=${filter}`);
+      const data = await response.json();
+      distros = data.distros;
+      totalPages = data.pagination.totalPages;
+      localStorage.setItem('cachedDistros', JSON.stringify(distros));
+    } catch (err) {
+      console.error('Failed to load distributions:', err);
+      error = 'Could not load distribution data. Please check your connection or try again later.';
+      const cachedDistros = localStorage.getItem('cachedDistros');
+      if (cachedDistros) {
+        distros = JSON.parse(cachedDistros);
+        error += ' Showing cached data.';
+      }
+    } finally {
+      loading = false;
+    }
+  }
+
+  function retryFetch() {
+    fetchDistros();
   }
 
   function nextPage() {
@@ -53,16 +74,23 @@
       <option value="alpha">Alpha</option>
     </select>
   </div>
-  <ul>
-    {#each distros as distro}
-      <li>
-        {distro.name} - {distro.release_date}
-        <img src={distro.logoUrl} alt="{distro.name} logo" />
-      </li>
-    {/each}
-  </ul>
-  <div>
-    <button on:click={prevPage} disabled={page === 1}>Previous</button>
-    <button on:click={nextPage} disabled={page === totalPages}>Next</button>
-  </div>
+  {#if loading}
+    <p>Loading...</p>
+  {:else if error}
+    <p>{error}</p>
+    <button on:click={retryFetch}>Retry</button>
+  {:else}
+    <ul>
+      {#each distros as distro}
+        <li>
+          {distro.name} - {distro.release_date}
+          <img src={distro.logoUrl} alt="{distro.name} logo" />
+        </li>
+      {/each}
+    </ul>
+    <div>
+      <button on:click={prevPage} disabled={page === 1}>Previous</button>
+      <button on:click={nextPage} disabled={page === totalPages}>Next</button>
+    </div>
+  {/if}
 </main>
