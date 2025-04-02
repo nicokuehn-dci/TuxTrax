@@ -1,11 +1,14 @@
+import os
+
 class AudioMIDISettings:
     def __init__(self, sample_rate=44100, buffer_size=512, midi_device="default", magenta_studio_path="", db_path="learning_data.db", pattern_save_path="patterns"):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
         self.midi_device = midi_device
-        self.magenta_studio_path = magenta_studio_path
+        self.magenta_studio_path = os.path.join(script_dir, magenta_studio_path)
         self.db_path = db_path
-        self.pattern_save_path = pattern_save_path
+        self.pattern_save_path = os.path.join(script_dir, pattern_save_path)
 
     def load_settings(self, settings_dict):
         self.sample_rate = settings_dict.get("sample_rate", self.sample_rate)

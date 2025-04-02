@@ -1,13 +1,15 @@
 import configparser
 import json
+import os
 
 config = configparser.ConfigParser()
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Default settings
 config['Audio'] = {
     'sample_rate': '44100',
     'buffer_size': '512',
-    'default_path': '~/samples'
+    'default_path': os.path.join(script_dir, 'samples')
 }
 
 config['MIDI'] = {
@@ -21,7 +23,7 @@ config['GUI'] = {
 }
 
 config['AI'] = {
-    'magenta_studio_path': '/usr/local/bin/magenta-studio'
+    'magenta_studio_path': os.path.join(script_dir, 'magenta-studio')
 }
 
 # Write default settings to file

@@ -9,17 +9,19 @@ def load_config(config_path="config/default.yaml"):
         return yaml.safe_load(f)
 
 def get_sample_library_paths():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    default_path = os.path.join(script_dir, "TuxTrax_Samples")
     config = load_config()
-    default_path = Path.home() / "TuxTrax_Samples"
     return [
         default_path,
         *config.get('library_paths', [])
     ]
 
 def create_project_folder(project_name):
-    base_path = Path.home() / "TuxTrax_Projects"
-    project_path = base_path / project_name
-    project_path.mkdir(parents=True, exist_ok=True)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    base_path = os.path.join(script_dir, "TuxTrax_Projects")
+    project_path = os.path.join(base_path, project_name)
+    os.makedirs(project_path, exist_ok=True)
     return str(project_path)
 
 def save_pattern_to_file(pattern, file_path):

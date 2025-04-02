@@ -9,9 +9,10 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class LearningManager:
-    def __init__(self, model_path="model.json", db_path="learning_data.db"):
-        self.model_path = model_path
-        self.db_path = db_path
+    def __init__(self, model_path=None, db_path=None):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.model_path = model_path or os.path.join(script_dir, "model.json")
+        self.db_path = db_path or os.path.join(script_dir, "learning_data.db")
         self.model = self.load_model()
         self._setup_database()
 
