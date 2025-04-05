@@ -14,3 +14,28 @@ ipcRenderer.on('message-from-main', (event, message) => {
 document.getElementById('sendMessageButton').addEventListener('click', () => {
   sendMessageToMainProcess('Hello from renderer process!');
 });
+
+// Handle UI interactions for device and visualizer panels
+document.getElementById('device-panel').addEventListener('input', (event) => {
+  const control = event.target;
+  if (control.tagName === 'INPUT' || control.tagName === 'BUTTON') {
+    const action = {
+      type: control.tagName,
+      id: control.id,
+      value: control.value
+    };
+    sendMessageToMainProcess(action);
+  }
+});
+
+document.getElementById('visualizer-panel').addEventListener('input', (event) => {
+  const control = event.target;
+  if (control.tagName === 'INPUT' || control.tagName === 'BUTTON') {
+    const action = {
+      type: control.tagName,
+      id: control.id,
+      value: control.value
+    };
+    sendMessageToMainProcess(action);
+  }
+});

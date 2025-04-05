@@ -1,12 +1,12 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
-function createWindow () {
+function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
-      preload: path.join(__dirname, 'renderer.js')
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
@@ -25,4 +25,8 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+ipcMain.on('device-action', (event, arg) => {
+  console.log(arg); // Log device action
 });
